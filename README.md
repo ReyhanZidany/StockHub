@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="stockhub.png" alt="StockHub Logo" width="120" height="auto" />
+  <img src="/stockhub.png" alt="StockHub Logo" width="120" height="auto" />
   <h1>StockHub</h1>
   
   <p>
