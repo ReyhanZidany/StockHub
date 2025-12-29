@@ -1,17 +1,11 @@
 <div align="center">
-  <img src="/stockhub.png" alt="StockHub Logo" width="120" height="auto" />
+  <img src="public/stockhub.png" alt="StockHub Logo" width="120" height="auto" />
   <h1>StockHub</h1>
   
   <p>
-    <strong>Modern Inventory & Stock Management System (ERP)</strong>
+    <strong> Inventory & Stock Management System (ERP)</strong>
   </p>
   
-  <p>
-    <a href="#-features">Features</a> •
-    <a href="#-tech-stack">Tech Stack</a> •
-    <a href="#-getting-started">Getting Started</a> •
-    <a href="#-license">License</a>
-  </p>
 
   ![Ruby](https://img.shields.io/badge/Ruby-3.x-CC342D?style=flat&logo=ruby&logoColor=white)
   ![Rails](https://img.shields.io/badge/Rails-8.x-CC0000?style=flat&logo=rubyonrails&logoColor=white)
@@ -21,9 +15,9 @@
 
 <br />
 
-**StockHub** is a comprehensive **Inventory & Stock Management System (ERP)** designed to demonstrate real-world enterprise architecture. It bridges a robust **Ruby on Rails (API-first)** backend with a high-performance **React (Vite + Tailwind CSS)** frontend.
+**StockHub** is a comprehensive **Inventory & Stock Management System (ERP)** designed to demonstrate real-world enterprise architecture. It bridges a robust **Ruby on Rails** backend with **React**.
 
-The project emphasizes **clean domain logic**, service-oriented architecture (`Inventory::*` services), and a seamless scalable frontend-backend separation standard in modern web development.
+The project emphasizes **clean domain logic**, service-oriented architecture, and a seamless scalable frontend-backend separation standard in modern web development.
 
 ---
 
