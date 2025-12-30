@@ -10,8 +10,11 @@ import {
 } from "recharts";
 
 const StockChart = ({ products }) => {
-  // Urutkan data
-  const chartData = [...products]
+  // 1. Safety Check: Pastikan products tidak undefined/null
+  const safeProducts = products || [];
+
+  // 2. Sorting & Slicing
+  const chartData = [...safeProducts]
     .sort((a, b) => b.stock - a.stock)
     .slice(0, 10);
 
@@ -37,9 +40,8 @@ const StockChart = ({ products }) => {
           Visualisasi produk dengan ketersediaan tertinggi.
         </p>
       </div>
-
-      {/* PENTING: Wrapper ini harus punya tinggi pasti (h-96 atau h-[400px]) dan lebar (w-full) */}
-      <div className="h-[400px] w-full min-w-0">
+      <div style={{ width: '100%', height: 300 }}>
+        
         {chartData.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
@@ -52,6 +54,8 @@ const StockChart = ({ products }) => {
                 tickLine={false} 
                 axisLine={false}
                 tick={{ fill: '#64748b', fontSize: 12 }}
+                // Pangkas nama produk jika kepanjangan
+                tickFormatter={(value) => value.length > 10 ? `${value.substring(0, 10)}...` : value}
               />
               <YAxis 
                 tickLine={false}
@@ -68,8 +72,9 @@ const StockChart = ({ products }) => {
             </BarChart>
           </ResponsiveContainer>
         ) : (
-          <div className="h-full flex items-center justify-center text-slate-400">
-            Memuat data grafik...
+          // Tampilan jika data masih kosong/loading
+          <div className="h-full w-full flex items-center justify-center text-slate-400 bg-slate-50 rounded-lg border border-dashed border-slate-200">
+            <p>Belum ada data produk untuk ditampilkan</p>
           </div>
         )}
       </div>

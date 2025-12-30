@@ -10,6 +10,7 @@ import {
   Search,
   ChevronLeft,
   ChevronRight,
+  Truck // <--- 1. TAMBAHKAN IMPORT ICON TRUCK
 } from "lucide-react";
 import { clearTokens } from "../utils/auth";
 
@@ -22,6 +23,7 @@ export default function Sidebar() {
     navigate("/");
   };
 
+  // Helper untuk styling otomatis (Aktif/Tidak Aktif)
   const linkClass = ({ isActive }) =>
     `flex items-center gap-3 px-3 py-3 rounded-lg transition-all whitespace-nowrap ${
       isActive
@@ -31,7 +33,6 @@ export default function Sidebar() {
 
   return (
     <aside
-      // PERBAIKAN 1: Tambahkan 'flex flex-col' di sini
       className={`h-screen sticky top-0 bg-slate-950 border-r border-slate-800 transition-all duration-300 flex flex-col ${
         isCollapsed ? "w-20" : "w-72"
       }`}
@@ -44,10 +45,9 @@ export default function Sidebar() {
       >
         {!isCollapsed && (
           <div className="flex items-center gap-2">
-            {/* --- GANTI LOGO DI SINI --- */}
             <img 
               src="/stockhub.png" 
-              alt="StockHub Logo" 
+              alt="StockHub" 
               className="w-8 h-8 object-contain" 
             />
             <div>
@@ -78,10 +78,7 @@ export default function Sidebar() {
         </div>
       )}
 
-      {/* NAV (Middle Section) */}
-      {/* Class 'flex-1' di sini akan memaksa div ini mengambil sisa ruang kosong,
-          sehingga mendorong Footer ke paling bawah.
-      */}
+      {/* NAV MENU */}
       <div className="flex-1 px-3 space-y-1 overflow-y-auto custom-scrollbar">
         <NavLink to="/dashboard" className={linkClass}>
           <LayoutDashboard size={20} />
@@ -98,6 +95,13 @@ export default function Sidebar() {
           {!isCollapsed && "Stock Movements"}
         </NavLink>
 
+        {/* --- 2. LOGIKA SUPPLIER DIPERBAIKI (Pakai linkClass biar konsisten) --- */}
+        <NavLink to="/suppliers" className={linkClass}>
+          <Truck size={20} />
+          {!isCollapsed && "Suppliers"}
+        </NavLink>
+        {/* ------------------------------------------------------------------ */}
+
         <NavLink to="/notifications" className={linkClass}>
           <Bell size={20} />
           {!isCollapsed && "Notifications"}
@@ -109,8 +113,7 @@ export default function Sidebar() {
         </NavLink>
       </div>
 
-      {/* FOOTER (User Profile) */}
-      {/* 'mt-auto' opsional jika flex-1 di atas sudah bekerja, tapi bagus untuk safety */}
+      {/* FOOTER */}
       <div className="p-3 border-t border-slate-800 mt-auto shrink-0 bg-slate-950">
         <div
           className={`flex items-center gap-3 ${

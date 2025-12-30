@@ -1,10 +1,12 @@
 import api from "./axios";
+import axios from "axios"; // <--- TAMBAHKAN INI (Library Axios asli)
 import { getRefreshToken, setTokens, clearTokens } from "../utils/auth";
 
 const API_URL = "http://localhost:3000/api/v1";
 
 export async function refreshToken() {
   try {
+    // Kita pakai axios instance standar karena header Auth mungkin sudah expired
     const response = await axios.post(`${API_URL}/refresh`, {
       refresh_token: getRefreshToken(),
     });
@@ -22,5 +24,5 @@ export async function refreshToken() {
   }
 }
 
-export const login = (email, password) =>
-  api.post("/login", { email, password });
+// Gunakan instance 'api' yang sudah punya interceptor
+export const login = (email, password) => api.post("/login", { email, password });

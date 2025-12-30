@@ -35,6 +35,7 @@ gem "image_processing", "~> 1.2"
 gem 'jwt'
 gem 'bcrypt', '~> 3.1'
 gem "rack-cors"
+gem "pundit"
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin Ajax possible
 # gem "rack-cors"

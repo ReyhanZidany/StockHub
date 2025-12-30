@@ -1,50 +1,31 @@
-import axios from "./axios";
+import api from "./axios"; // <--- PENTING: Import dari file axios.js yang kita buat, BUKAN "axios"
 
-const API_URL = "http://localhost:3000/api/v1";
+// Ambil semua produk
+export const fetchProducts = async () => {
+  const response = await api.get("/products");
+  return response.data;
+};
 
-export async function fetchProducts() {
-  const res = await fetch(`${API_URL}/products`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  });
+// Tambah Produk Baru (Create)
+export const createProduct = async (productData) => {
+  const response = await api.post("/products", productData);
+  return response.data;
+};
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch products");
-  }
+// Tambah Stok (Barang Masuk)
+export const addStock = async (id, quantity) => {
+  const response = await api.post(`/products/${id}/add_stock`, { quantity });
+  return response.data;
+};
 
-  return res.json();
-}
+// Kurangi Stok (Barang Keluar)
+export const reduceStock = async (id, quantity) => {
+  const response = await api.post(`/products/${id}/reduce_stock`, { quantity });
+  return response.data;
+};
 
-export async function createProduct(payload) {
-  const res = await axios.post("/products", {
-    product: payload,
-  });
-
-  return res.data;
-}
-
-export async function addStock(productId, quantity) {
-  const res = await axios.post(
-    `/products/${productId}/add_stock`,
-    { quantity }
-  );
-
-  return res.data;
-}
-
-export async function reduceStock(productId, quantity) {
-  const res = await axios.post(
-    `/products/${productId}/reduce_stock`,
-    { quantity }
-  );
-  return res.data;
-}
-
-export async function adjustStock(productId, actualStock) {
-  const res = await axios.post(
-    `/products/${productId}/adjust_stock`,
-    { actual_stock: actualStock }
-  );
-  return res.data;
-}
+// Adjust Stok (Opname)
+export const adjustStock = async (id, actualStock) => {
+  const response = await api.post(`/products/${id}/adjust_stock`, { actual_stock: actualStock });
+  return response.data;
+};

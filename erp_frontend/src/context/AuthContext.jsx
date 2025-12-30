@@ -1,23 +1,33 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
+import { setTokens, clearTokens, getAccessToken } from "../utils/auth";
 
 export const AuthContext = createContext();
 
-export function AuthProvider({ children }) {
-  const [token, setToken] = useState(localStorage.getItem("token"));
+export const AuthProvider = ({ children }) => {
+  // Cek localStorage saat aplikasi pertama kali dimuat
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem("user_data");
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
 
-  const login = (token) => {
-    localStorage.setItem("token", token);
-    setToken(token);
+  // Fungsi Login menerima Token DAN UserData
+  const login = (token, userData) => {
+    setTokens({ accessToken: token, refreshToken: token });
+    
+    // Simpan ke State dan LocalStorage
+    setUser(userData);
+    localStorage.setItem("user_data", JSON.stringify(userData));
   };
 
   const logout = () => {
-    localStorage.removeItem("token");
-    setToken(null);
+    clearTokens();
+    setUser(null);
+    localStorage.removeItem("user_data");
   };
 
   return (
-    <AuthContext.Provider value={{ token, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
-}
+};

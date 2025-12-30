@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_29_150157) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_30_112910) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -20,7 +20,9 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_29_150157) do
     t.decimal "price"
     t.string "sku"
     t.integer "stock"
+    t.bigint "supplier_id"
     t.datetime "updated_at", null: false
+    t.index ["supplier_id"], name: "index_products_on_supplier_id"
   end
 
   create_table "stock_movements", force: :cascade do |t|
@@ -33,6 +35,15 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_29_150157) do
     t.index ["product_id"], name: "index_stock_movements_on_product_id"
   end
 
+  create_table "suppliers", force: :cascade do |t|
+    t.text "address"
+    t.datetime "created_at", null: false
+    t.string "email"
+    t.string "name"
+    t.string "phone"
+    t.datetime "updated_at", null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email"
@@ -41,5 +52,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_29_150157) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "products", "suppliers"
   add_foreign_key "stock_movements", "products"
 end

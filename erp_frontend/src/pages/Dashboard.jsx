@@ -1,66 +1,103 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import Layout from "../components/Layout";
 import { fetchProducts } from "../api/products";
-import { Package, Layers, AlertTriangle } from "lucide-react"; 
+import { AuthContext } from "../context/AuthContext"; // Import Context untuk sapaan
 import StockChart from "../components/StockChart";
+import { 
+  Package, 
+  Layers, 
+  AlertTriangle, 
+  TrendingUp 
+} from "lucide-react"; 
 
 export default function Dashboard() {
+  const { user } = useContext(AuthContext); // Ambil data user
+
   const [stats, setStats] = useState({
     totalProducts: 0,
     totalStock: 0,
     lowStock: 0,
+    totalValue: 0 // Tambahan: Estimasi nilai aset
   });
 
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
 
-useEffect(() => {
-  fetchProducts()
-    .then((products) => {
-      setProducts(products); // 🔥 INI YANG KURANG
+  useEffect(() => {
+    fetchProducts()
+      .then((data) => {
+        // 1. Simpan Data Produk untuk Grafik
+        // Pastikan data berupa array agar tidak error
+        const productList = Array.isArray(data) ? data : [];
+        setProducts(productList);
 
-      const totalProducts = products.length;
-      const totalStock = products.reduce((sum, p) => sum + p.stock, 0);
-      const lowStock = products.filter((p) => p.stock < 10).length;
+        // 2. Hitung Statistik
+        const totalProducts = productList.length;
+        
+        // Gunakan Number() untuk memastikan stok dihitung sebagai angka
+        const totalStock = productList.reduce((sum, p) => sum + (Number(p.stock) || 0), 0);
+        
+        // Filter stok rendah (< 10)
+        const lowStock = productList.filter((p) => (Number(p.stock) || 0) < 10).length;
 
-      setStats({
-        totalProducts,
-        totalStock,
-        lowStock,
-      });
-    })
-    .finally(() => setLoading(false));
-}, []);
+        // Hitung estimasi nilai aset (Stok * Harga)
+        const totalValue = productList.reduce((sum, p) => sum + ((Number(p.stock) || 0) * (Number(p.price) || 0)), 0);
 
+        setStats({
+          totalProducts,
+          totalStock,
+          lowStock,
+          totalValue
+        });
+      })
+      .catch((err) => console.error("Gagal memuat dashboard:", err))
+      .finally(() => setLoading(false));
+  }, []);
 
-  // Komponen Kartu Statistik (Re-usable agar kodenya rapi)
-  const StatCard = ({ title, value, icon: Icon, colorClass, bgClass }) => (
-    <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm flex items-center justify-between hover:shadow-md transition-shadow">
+  // --- Komponen Kartu Statistik (Internal Component) ---
+  const StatCard = ({ title, value, icon: Icon, colorClass, bgClass, isCurrency = false }) => (
+    <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm flex items-center justify-between hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
       <div>
-        <p className="text-sm font-medium text-slate-500 uppercase tracking-wide">
+        <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
           {title}
         </p>
-        <p className="text-3xl font-bold text-slate-800 mt-1">
-          {loading ? "..." : value}
+        <p className="text-2xl font-bold text-slate-800">
+          {loading ? (
+            <span className="animate-pulse bg-slate-200 h-8 w-24 block rounded"></span>
+          ) : (
+            isCurrency 
+              ? `Rp ${value.toLocaleString('id-ID')}` 
+              : value.toLocaleString('id-ID')
+          )}
         </p>
       </div>
-      <div className={`p-3 rounded-lg ${bgClass} ${colorClass}`}>
-        <Icon size={24} />
+      <div className={`p-3 rounded-xl ${bgClass} ${colorClass}`}>
+        <Icon size={24} strokeWidth={2} />
       </div>
     </div>
   );
 
   return (
     <Layout>
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-slate-800">Dashboard Overview</h1>
-
+      {/* Header Section */}
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-800">
+            Welcome back, {user?.name || user?.email?.split('@')[0] || 'User'}!
+          </h1>
+          <p className="text-slate-500 text-sm mt-1">
+            Here is what's happening with your inventory today.
+          </p>
+        </div>
+        <div className="text-sm text-slate-500 bg-white px-4 py-2 rounded-lg border border-slate-200 shadow-sm">
+          {new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+        </div>
       </div>
 
-      {/* Grid Responsive: 1 kolom di HP, 3 kolom di Laptop */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* Grid Statistik */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         
-        {/* Kartu 1: Total Products (Biru) */}
+        {/* Kartu 1: Total Products */}
         <StatCard
           title="Total Products"
           value={stats.totalProducts}
@@ -69,18 +106,28 @@ useEffect(() => {
           bgClass="bg-blue-50"
         />
 
-        {/* Kartu 2: Total Stock (Hijau/Emerald) */}
+        {/* Kartu 2: Total Stock */}
         <StatCard
-          title="Total Stock"
+          title="Total Inventory"
           value={stats.totalStock}
           icon={Layers}
-          colorClass="text-emerald-600"
-          bgClass="bg-emerald-50"
+          colorClass="text-purple-600"
+          bgClass="bg-purple-50"
         />
 
-        {/* Kartu 3: Low Stock (Merah/Rose - Warning) */}
+        {/* Kartu 3: Asset Value (Tambahan biar keren) */}
         <StatCard
-          title="Low Stock Items"
+          title="Est. Asset Value"
+          value={stats.totalValue}
+          icon={TrendingUp}
+          colorClass="text-emerald-600"
+          bgClass="bg-emerald-50"
+          isCurrency={true}
+        />
+
+        {/* Kartu 4: Low Stock */}
+        <StatCard
+          title="Low Stock Alert"
           value={stats.lowStock}
           icon={AlertTriangle}
           colorClass="text-rose-600"
@@ -88,16 +135,22 @@ useEffect(() => {
         />
       </div>
       
-        <div className="mt-8">
-        {products.length > 0 ? (
-            <StockChart products={products} />
+      {/* Bagian Grafik */}
+      <div className="grid grid-cols-1 gap-6">
+        {loading ? (
+          <div className="h-[350px] bg-white rounded-xl border border-slate-100 animate-pulse flex items-center justify-center text-slate-300">
+            Loading Chart...
+          </div>
+        ) : products.length > 0 ? (
+           // Render Grafik (Height sudah dihandle di dalam StockChart)
+           <StockChart products={products} />
         ) : (
-            <div className="bg-white p-8 rounded-xl border border-slate-100 shadow-sm text-center text-slate-400">
-            No data available
-            </div>
+           <div className="bg-white p-12 rounded-xl border border-slate-100 shadow-sm text-center text-slate-400">
+             <Package size={48} className="mx-auto mb-4 opacity-50" />
+             <p>No product data available yet.</p>
+           </div>
         )}
-        </div>
-
+      </div>
 
     </Layout>
   );
