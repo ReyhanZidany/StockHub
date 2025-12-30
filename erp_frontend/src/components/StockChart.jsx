@@ -10,14 +10,11 @@ import {
 } from "recharts";
 
 const StockChart = ({ products }) => {
-  // 1. MEMPERSIAPKAN DATA
-  // Kita tidak ingin menampilkan SEMUA produk jika ada ratusan.
-  // Mari kita ambil 10 produk dengan stok terbanyak untuk ditampilkan di grafik.
+  // Urutkan data
   const chartData = [...products]
-    .sort((a, b) => b.stock - a.stock) // Urutkan dari stok terbanyak ke paling sedikit
-    .slice(0, 10); // Ambil 10 item pertama saja
+    .sort((a, b) => b.stock - a.stock)
+    .slice(0, 10);
 
-  // Komponen Tooltip Kustom agar tampilannya lebih bersih
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
@@ -33,61 +30,48 @@ const StockChart = ({ products }) => {
   };
 
   return (
-    // Container "Kartu" Putih agar seragam dengan dashboard
-    <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm animate-fade-in">
+    <div className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
       <div className="mb-6">
         <h2 className="text-lg font-bold text-slate-800">Top 10 Stok Produk</h2>
         <p className="text-sm text-slate-500">
-          Visualisasi produk dengan ketersediaan tertinggi saat ini.
+          Visualisasi produk dengan ketersediaan tertinggi.
         </p>
       </div>
 
-      {/* ResponsiveContainer membuat grafik menyesuaikan lebar layar */}
-      <div className="h-[400px] w-full font-sans text-sm">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart
-            data={chartData}
-            margin={{
-              top: 20,
-              right: 30,
-              left: 0,
-              bottom: 5,
-            }}
-          >
-            {/* Grid garis putus-putus horizontal saja */}
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-            
-            {/* Sumbu X (Nama Produk) */}
-            <XAxis 
-              dataKey="name" 
-              tickLine={false} 
-              axisLine={false}
-              tick={{ fill: '#64748b', fontSize: 12 }} // Warna text slate-500
-              // Jika nama produk terlalu panjang, bisa dipotong:
-              // tickFormatter={(value) => value.length > 10 ? `${value.substring(0, 10)}...` : value}
-            />
-            
-            {/* Sumbu Y (Jumlah Stok) */}
-            <YAxis 
-              tickLine={false}
-              axisLine={false}
-              tick={{ fill: '#64748b', fontSize: 12 }}
-            />
-            
-            {/* Tooltip saat hover */}
-            <Tooltip content={<CustomTooltip />} cursor={{ fill: 'transparent' }} />
-            
-            {/* Batang Grafik */}
-            <Bar 
-              dataKey="stock" 
-              fill="#4f46e5" // Warna Indigo-600 agar sesuai tema sidebar/dashboard
-              radius={[4, 4, 0, 0]} // Membuat sudut atas batang menjadi bulat
-              barSize={40} // Lebar batang maksimum
-              // Opsional: Menambahkan animasi saat muncul
-              animationDuration={1500}
-            />
-          </BarChart>
-        </ResponsiveContainer>
+      {/* PENTING: Wrapper ini harus punya tinggi pasti (h-96 atau h-[400px]) dan lebar (w-full) */}
+      <div className="h-[400px] w-full min-w-0">
+        {chartData.length > 0 ? (
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={chartData}
+              margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+              <XAxis 
+                dataKey="name" 
+                tickLine={false} 
+                axisLine={false}
+                tick={{ fill: '#64748b', fontSize: 12 }}
+              />
+              <YAxis 
+                tickLine={false}
+                axisLine={false}
+                tick={{ fill: '#64748b', fontSize: 12 }}
+              />
+              <Tooltip content={<CustomTooltip />} cursor={{ fill: 'transparent' }} />
+              <Bar 
+                dataKey="stock" 
+                fill="#4f46e5" 
+                radius={[4, 4, 0, 0]} 
+                barSize={40}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        ) : (
+          <div className="h-full flex items-center justify-center text-slate-400">
+            Memuat data grafik...
+          </div>
+        )}
       </div>
     </div>
   );

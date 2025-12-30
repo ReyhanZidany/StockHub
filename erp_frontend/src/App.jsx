@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Products from "./pages/Products";
@@ -11,7 +11,13 @@ export default function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Login />} />
+          {/* 1. Route Login yang eksplisit */}
+          <Route path="/login" element={<Login />} />
+
+          {/* 2. Redirect Root (/) ke /login */}
+          <Route path="/" element={<Navigate to="/login" replace />} />
+
+          {/* 3. Protected Routes (Halaman yang butuh login) */}
           <Route
             path="/dashboard"
             element={
@@ -36,6 +42,9 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+
+          {/* 4. Catch-all Route (Untuk halaman 404/Tidak Ditemukan) */}
+          <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

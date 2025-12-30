@@ -1,75 +1,142 @@
-import { NavLink } from "react-router-dom";
-import { 
-  LayoutDashboard, 
-  Package, 
-  ArrowRightLeft, 
-  LogOut, 
-  Hexagon 
+import { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import {
+  LayoutDashboard,
+  Package,
+  ArrowRightLeft,
+  LogOut,
+  Settings,
+  Bell,
+  Search,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
+import { clearTokens } from "../utils/auth";
 
 export default function Sidebar() {
-  // FUNGSI STYLING:
-  // Bagian "text-slate-300" di bawah inilah yang membuat teks jadi PUTIH
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    clearTokens();
+    navigate("/");
+  };
+
   const linkClass = ({ isActive }) =>
-    `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group ${
+    `flex items-center gap-3 px-3 py-3 rounded-lg transition-all whitespace-nowrap ${
       isActive
-        ? "bg-indigo-800 text-black shadow-md shadow-indigo-200/20" // Kondisi AKTIF
-        : "text-slate-900 hover:bg-slate-800 hover:text-white"      // Kondisi TIDAK AKTIF (Putih Gading)
+        ? "bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow"
+        : "text-slate-400 hover:text-white hover:bg-slate-800/60"
     }`;
 
   return (
-    <aside className="w-64 h-screen bg-slate-950 text-white flex flex-col border-r border-slate-800">
-      {/* --- HEADER / LOGO --- */}
-      <div className="h-16 flex items-center px-6 border-b border-slate-800 gap-3">
-        <div className="p-1.5 bg-indigo-600 rounded-lg">
-          <Hexagon size={20} className="text-white fill-current" />
-        </div>
-        <span className="text-lg font-bold tracking-wide">ERP System</span>
-      </div>
+    <aside
+      // PERBAIKAN 1: Tambahkan 'flex flex-col' di sini
+      className={`h-screen sticky top-0 bg-slate-950 border-r border-slate-800 transition-all duration-300 flex flex-col ${
+        isCollapsed ? "w-20" : "w-72"
+      }`}
+    >
+      {/* HEADER */}
+      <div
+        className={`h-16 flex items-center border-b border-slate-800 px-4 shrink-0 ${
+          isCollapsed ? "justify-center" : "justify-between"
+        }`}
+      >
+        {!isCollapsed && (
+          <div className="flex items-center gap-2">
+            {/* --- GANTI LOGO DI SINI --- */}
+            <img 
+              src="/stockhub.png" 
+              alt="StockHub Logo" 
+              className="w-8 h-8 object-contain" 
+            />
+            <div>
+              <p className="font-bold text-white">StockHub</p>
+              <p className="text-[10px] text-slate-400">ERP System</p>
+            </div>
+          </div>
+        )}
 
-      {/* --- MAIN NAVIGATION --- */}
-      <div className="flex-1 flex flex-col gap-6 p-4 overflow-y-auto">
-        
-        {/* Group: Main */}
-        <div>
-          <p className="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
-            Menu
-          </p>
-          <nav className="space-y-1">
-            <NavLink to="/dashboard" className={linkClass}>
-              <LayoutDashboard size={20} />
-              <span className="text-sm font-medium">Dashboard</span>
-            </NavLink>
-
-            <NavLink to="/products" className={linkClass}>
-              <Package size={20} />
-              <span className="text-sm font-medium">Products</span>
-            </NavLink>
-
-            <NavLink to="/stock-movements" className={linkClass}>
-              <ArrowRightLeft size={20} />
-              <span className="text-sm font-medium">Stock Movements</span>
-            </NavLink>
-          </nav>
-        </div>
-      </div>
-
-      {/* --- FOOTER / LOGOUT --- */}
-      <div className="p-4 border-t border-slate-800">
-        <button className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-800 hover:text-red-400 transition-colors">
-          <LogOut size={20} />
-          <span className="text-sm font-medium">Logout</span>
+        <button
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          className="p-2 rounded hover:bg-slate-800 text-slate-400 hover:text-white"
+        >
+          {isCollapsed ? <ChevronRight /> : <ChevronLeft />}
         </button>
-        
-        {/* User Profile Mini */}
-        <div className="mt-4 flex items-center gap-3 px-3">
-          <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs font-bold">
+      </div>
+
+      {/* SEARCH */}
+      {!isCollapsed && (
+        <div className="p-4 shrink-0">
+          <div className="relative">
+            <Search className="absolute left-3 top-2.5 text-slate-500 w-4 h-4" />
+            <input
+              placeholder="Search..."
+              className="w-full pl-10 py-2 bg-slate-900 border border-slate-800 rounded text-sm text-white focus:outline-none"
+            />
+          </div>
+        </div>
+      )}
+
+      {/* NAV (Middle Section) */}
+      {/* Class 'flex-1' di sini akan memaksa div ini mengambil sisa ruang kosong,
+          sehingga mendorong Footer ke paling bawah.
+      */}
+      <div className="flex-1 px-3 space-y-1 overflow-y-auto custom-scrollbar">
+        <NavLink to="/dashboard" className={linkClass}>
+          <LayoutDashboard size={20} />
+          {!isCollapsed && "Dashboard"}
+        </NavLink>
+
+        <NavLink to="/products" className={linkClass}>
+          <Package size={20} />
+          {!isCollapsed && "Products"}
+        </NavLink>
+
+        <NavLink to="/stock-movements" className={linkClass}>
+          <ArrowRightLeft size={20} />
+          {!isCollapsed && "Stock Movements"}
+        </NavLink>
+
+        <NavLink to="/notifications" className={linkClass}>
+          <Bell size={20} />
+          {!isCollapsed && "Notifications"}
+        </NavLink>
+
+        <NavLink to="/settings" className={linkClass}>
+          <Settings size={20} />
+          {!isCollapsed && "Settings"}
+        </NavLink>
+      </div>
+
+      {/* FOOTER (User Profile) */}
+      {/* 'mt-auto' opsional jika flex-1 di atas sudah bekerja, tapi bagus untuk safety */}
+      <div className="p-3 border-t border-slate-800 mt-auto shrink-0 bg-slate-950">
+        <div
+          className={`flex items-center gap-3 ${
+            isCollapsed ? "justify-center" : ""
+          }`}
+        >
+          <div className="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold shrink-0">
             AD
           </div>
-          <div className="flex flex-col">
-            <span className="text-xs font-semibold text-white">Admin User</span>
-            <span className="text-[10px] text-slate-500">admin@erp.com</span>
-          </div>
+
+          {!isCollapsed && (
+            <>
+              <div className="flex-1 overflow-hidden">
+                <p className="text-sm font-semibold text-white truncate">Admin</p>
+                <p className="text-xs text-slate-400 truncate">admin@stockhub.com</p>
+              </div>
+
+              <button
+                onClick={handleLogout}
+                className="p-2 rounded hover:bg-red-500/10 text-slate-400 hover:text-red-400 shrink-0"
+                title="Logout"
+              >
+                <LogOut size={18} />
+              </button>
+            </>
+          )}
         </div>
       </div>
     </aside>
