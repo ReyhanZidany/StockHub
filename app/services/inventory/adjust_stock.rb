@@ -8,29 +8,37 @@ module Inventory
       @movements = movement_repository
     end
 
-    def call(product_id:, actual_stock:)
+    def call(product_id:, actual_stock:, user: nil)
       raise ArgumentError, "Stock must be >= 0" if actual_stock < 0
 
-      product = @products.find(product_id)
-      difference = actual_stock - product.stock
-
-      return product if difference.zero?
-
       ActiveRecord::Base.transaction do
+        # 1. LOCK DULU baru ambil data
+        product = @products.lock.find(product_id)
+
+        # 2. Hitung selisih berdasarkan data yang sudah di-lock (paling update)
+        old_stock = product.stock
+        difference = actual_stock - old_stock
+
+        # 3. Early return jika ternyata tidak ada perubahan
+        return product if difference.zero?
+
+        # 4. UPDATE STOK (Bagian ini yang tadi hilang)
         product.update!(stock: actual_stock)
 
+        # 5. Catat Movement
         @movements.create!(
           product: product,
           quantity: difference.abs,
           movement_type: "ADJUST",
+          user: user,
           metadata: {
-            from: product.stock,
+            from: old_stock,
             to: actual_stock
           }
         )
-      end
 
-      product
+        product
+      end
     end
   end
 end

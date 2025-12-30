@@ -23,4 +23,14 @@ class ApplicationController < ActionController::API
   def user_not_authorized
     render json: { error: "You are not authorized to perform this action." }, status: :forbidden
   end
+
+  def record_activity(action, record, details = nil)
+    AuditLog.create(
+      user: current_user,
+      action: action,
+      record_type: record.class.name,
+      record_id: record.id,
+      details: details || "#{action} #{record.class.name}"
+    )
+  end
 end

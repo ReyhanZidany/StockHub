@@ -15,12 +15,12 @@ module Api
       end
 
       # POST /api/v1/suppliers
-      def create
-        # Hanya Admin yang boleh tambah supplier (Opsional, tergantung kebijakan)
-        # authorize Supplier 
-        
+      def create        
         supplier = Supplier.new(supplier_params)
         if supplier.save
+          # LOGGING
+          record_activity("CREATED", supplier, "Added new supplier: #{supplier.name}")
+          
           render json: supplier, status: :created
         else
           render json: { errors: supplier.errors.full_messages }, status: :unprocessable_entity
@@ -30,6 +30,9 @@ module Api
       # PUT /api/v1/suppliers/:id
       def update
         if @supplier.update(supplier_params)
+          # LOGGING
+          record_activity("UPDATED", @supplier, "Updated supplier info: #{@supplier.name}")
+
           render json: @supplier
         else
           render json: { errors: @supplier.errors.full_messages }, status: :unprocessable_entity
@@ -38,7 +41,12 @@ module Api
 
       # DELETE /api/v1/suppliers/:id
       def destroy
+        supplier_name = @supplier.name 
+        
         @supplier.destroy
+        # LOGGING
+        record_activity("DELETED", @supplier, "Deleted supplier: #{supplier_name}")
+
         head :no_content
       end
 

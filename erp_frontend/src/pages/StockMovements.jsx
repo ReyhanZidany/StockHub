@@ -2,146 +2,176 @@ import { useEffect, useState } from "react";
 import Layout from "../components/Layout";
 import Table from "../components/Table";
 import Loading from "../components/Loading";
-import { fetchStockMovements } from "../api/stockMovements";
-import { 
-  History, 
-  ArrowUpRight, 
-  ArrowDownLeft, 
-  RefreshCw,
-  Calendar,
-  Package
-} from "lucide-react";
+import { fetchStockMovements } from "../api/products";
+import { ArrowRightLeft, Calendar, Filter, XCircle } from "lucide-react";
 
 export default function StockMovements() {
-  const [data, setData] = useState([]);
+  const [movements, setMovements] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchStockMovements()
-      .then((res) => {
-        // Urutkan dari yang terbaru (jika backend belum mengurutkan)
-        const sorted = res.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-        setData(sorted);
-      })
-      .finally(() => setLoading(false));
-  }, []);
+  // State untuk Filter
+  const [filters, setFilters] = useState({
+    startDate: "",
+    endDate: "",
+    type: "ALL"
+  });
 
-  // --- LOGIC: Badge Warna untuk Tipe Movement ---
-  const getTypeBadge = (type) => {
-    switch (type) {
-      case "add_stock":
-      case "in":
-        return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 border border-emerald-200">
-            <ArrowDownLeft size={12} />
-            Stock In
-          </span>
-        );
-      case "reduce_stock":
-      case "out":
-        return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-rose-100 text-rose-700 border border-rose-200">
-            <ArrowUpRight size={12} />
-            Stock Out
-          </span>
-        );
-      case "adjust_stock":
-      case "adjust":
-        return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700 border border-blue-200">
-            <RefreshCw size={12} />
-            Adjustment
-          </span>
-        );
-      default:
-        return (
-          <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
-            {type}
-          </span>
-        );
-    }
+  // Fungsi Load Data (Menerima parameter filter)
+  const loadData = (currentFilters = {}) => {
+    setLoading(true);
+    // Konversi key camelCase ke snake_case untuk Rails
+    const apiParams = {
+      start_date: currentFilters.startDate,
+      end_date: currentFilters.endDate,
+      type: currentFilters.type
+    };
+
+    fetchStockMovements(apiParams)
+      .then(setMovements)
+      .catch(err => console.error(err))
+      .finally(() => setLoading(false));
   };
 
-  // --- LOGIC: Format Data untuk Tabel ---
-  const formattedData = data.map((m) => ({
-    id: <span className="text-gray-500 text-xs">#{m.id}</span>,
-    
-    // Kolom Product: Nama Tebal + SKU Tipis
-    product: (
-      <div className="flex flex-col">
-        <span className="font-medium text-slate-700">{m.product?.name || "Unknown"}</span>
-        <span className="text-xs text-slate-400 flex items-center gap-1">
-          <Package size={10} />
-          {m.product?.sku}
-        </span>
-      </div>
-    ),
+  // Load awal (tanpa filter)
+  useEffect(() => {
+    loadData(filters);
+  }, []); // Run once
 
-    // Kolom Type: Panggil fungsi Badge di atas
-    movement_type: getTypeBadge(m.movement_type),
+  // Handle tombol "Apply Filter"
+  const handleFilter = (e) => {
+    e.preventDefault();
+    loadData(filters);
+  };
 
-    // Kolom Qty: Warna dinamis (Hijau utk tambah, Merah utk kurang)
-    quantity: (
-      <span className={`font-semibold ${
-        ['out', 'reduce_stock'].includes(m.movement_type) ? 'text-rose-600' : 'text-emerald-600'
-      }`}>
-        {['out', 'reduce_stock'].includes(m.movement_type) ? '-' : '+'}
-        {m.quantity}
-      </span>
-    ),
-
-    // Kolom Date: Format cantik
-    created_at: (
-      <div className="flex items-center gap-2 text-slate-500 text-sm">
-        <Calendar size={14} />
-        {new Date(m.created_at).toLocaleDateString("id-ID", {
-          day: "numeric", month: "short", year: "numeric", 
-          hour: "2-digit", minute: "2-digit"
-        })}
-      </div>
-    ),
-  }));
+  // Handle tombol "Reset"
+  const handleReset = () => {
+    const resetState = { startDate: "", endDate: "", type: "ALL" };
+    setFilters(resetState);
+    loadData(resetState);
+  };
 
   const columns = [
-    { key: "id", label: "ID" },
-    { key: "created_at", label: "Date & Time" },
-    { key: "product", label: "Product Info" },
-    { key: "movement_type", label: "Movement Type" },
-    { key: "quantity", label: "Qty Change" },
+    { key: "date", label: "Date & Time", render: (val) => (
+      <div className="text-sm text-slate-600">
+        {new Date(val).toLocaleString('id-ID', { 
+           day: '2-digit', month: 'short', year: 'numeric', 
+           hour: '2-digit', minute: '2-digit' 
+        })}
+      </div>
+    )},
+    { key: "product", label: "Product Info", render: (val, row) => (
+      <div>
+        <p className="font-semibold text-slate-800">{val}</p>
+        <span className="text-[10px] bg-slate-100 text-slate-500 px-1 rounded font-mono">{row.sku}</span>
+      </div>
+    )},
+    { key: "type", label: "Type", render: (val) => (
+      <span className={`px-2 py-1 rounded text-xs font-bold ${
+        val === "IN" ? "bg-emerald-100 text-emerald-700" : 
+        val === "OUT" ? "bg-orange-100 text-orange-700" :
+        "bg-blue-100 text-blue-700"
+      }`}>
+        {val === "IN" ? "INCOMING" : val === "OUT" ? "OUTGOING" : val}
+      </span>
+    )},
+    { key: "quantity", label: "Qty", align: "center", render: (val, row) => (
+       <span className={`font-bold ${row.type === 'OUT' ? 'text-red-600' : 'text-green-600'}`}>
+         {row.type === 'OUT' ? '-' : '+'}{val}
+       </span>
+    )},
+    { key: "user", label: "Actor", render: (val) => <span className="text-xs text-slate-500">{val}</span> },
   ];
 
   return (
     <Layout>
-      {/* Header Section */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <h1 className="text-2xl font-bold text-slate-800">Stock Movements</h1>
-          </div>
-          <p className="text-slate-500 text-sm ml-1">
-            Track full history of inventory changes (In/Out/Adjustments).
-          </p>
-        </div>
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
+          <ArrowRightLeft className="text-indigo-600" />
+          Stock Movements History
+        </h1>
+        <p className="text-slate-500 text-sm mt-1">Track every item entering or leaving your warehouse.</p>
       </div>
 
-      {/* Content Section */}
+      {/* --- FILTER BAR --- */}
+      <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 mb-6">
+        <form onSubmit={handleFilter} className="flex flex-col md:flex-row md:items-end gap-4">
+          
+          {/* Filter Tanggal Mulai */}
+          <div className="flex-1">
+            <label className="text-xs font-semibold text-slate-500 uppercase mb-1 flex items-center gap-1">
+              <Calendar size={12}/> Start Date
+            </label>
+            <input 
+              type="date" 
+              className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
+              value={filters.startDate}
+              onChange={(e) => setFilters({...filters, startDate: e.target.value})}
+            />
+          </div>
+
+          {/* Filter Tanggal Akhir */}
+          <div className="flex-1">
+            <label className="text-xs font-semibold text-slate-500 uppercase mb-1 flex items-center gap-1">
+              <Calendar size={12}/> End Date
+            </label>
+            <input 
+              type="date" 
+              className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
+              value={filters.endDate}
+              onChange={(e) => setFilters({...filters, endDate: e.target.value})}
+            />
+          </div>
+
+          {/* Filter Tipe Transaksi */}
+          <div className="flex-1">
+             <label className="text-xs font-semibold text-slate-500 uppercase mb-1 flex items-center gap-1">
+              <Filter size={12}/> Transaction Type
+            </label>
+            <select
+              className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none bg-white"
+              value={filters.type}
+              onChange={(e) => setFilters({...filters, type: e.target.value})}
+            >
+              <option value="ALL">All Types</option>
+              <option value="IN">Incoming (Masuk)</option>
+              <option value="OUT">Outgoing (Keluar)</option>
+              <option value="ADJUST">Adjustment (Koreksi)</option>
+            </select>
+          </div>
+
+          {/* Tombol Action */}
+          <div className="flex gap-2">
+            <button 
+              type="submit" 
+              className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+            >
+              <Filter size={16} /> Filter
+            </button>
+            {(filters.startDate || filters.endDate || filters.type !== 'ALL') && (
+              <button 
+                type="button" 
+                onClick={handleReset}
+                className="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+              >
+                <XCircle size={16} /> Reset
+              </button>
+            )}
+          </div>
+
+        </form>
+      </div>
+
+      {/* --- TABLE --- */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         {loading ? (
-          <div className="p-12">
-            <Loading />
-          </div>
-        ) : data.length > 0 ? (
-          <Table columns={columns} data={formattedData} />
+          <div className="p-12"><Loading /></div>
+        ) : movements.length > 0 ? (
+          <Table columns={columns} data={movements} />
         ) : (
-          // Empty State jika tidak ada data
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="bg-slate-50 p-4 rounded-full mb-4">
-              <History className="text-slate-300 w-12 h-12" />
-            </div>
-            <h3 className="text-lg font-medium text-slate-900">No History Found</h3>
-            <p className="text-slate-500 max-w-sm mt-1">
-              There are no recorded stock movements yet. Start adding or selling products to see history here.
-            </p>
+          <div className="flex flex-col items-center justify-center py-16 text-center text-slate-400">
+            <ArrowRightLeft size={48} className="mb-3 opacity-50" />
+            <p>No movements found for this period.</p>
+            <button onClick={handleReset} className="text-indigo-600 text-sm mt-2 hover:underline">Clear Filters</button>
           </div>
         )}
       </div>

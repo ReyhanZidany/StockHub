@@ -165,7 +165,11 @@ export default function Products() {
 
       {/* --- MODALS SECTION --- */}
       {showModal && (
-        <Modal title="Add New Product" onClose={() => setShowModal(false)}>
+        <Modal 
+          isOpen={true} // <--- TAMBAHKAN INI
+          title="Add New Product" 
+          onClose={() => setShowModal(false)}
+        >
           <AddProductForm
             onSuccess={() => {
               setShowModal(false);
@@ -175,8 +179,13 @@ export default function Products() {
         </Modal>
       )}
 
+      {/* 2. Modal Add Stock */}
       {selectedProduct && (
-        <Modal title={`Add Stock: ${selectedProduct.name}`} onClose={() => setSelectedProduct(null)}>
+        <Modal 
+          isOpen={true} // <--- TAMBAHKAN INI
+          title={`Add Stock: ${selectedProduct.name}`} 
+          onClose={() => setSelectedProduct(null)}
+        >
           <AddStockForm
             product={selectedProduct}
             onSuccess={() => {
@@ -187,8 +196,13 @@ export default function Products() {
         </Modal>
       )}
 
+      {/* 3. Modal Reduce Stock */}
       {reduceProduct && (
-        <Modal title={`Reduce Stock: ${reduceProduct.name}`} onClose={() => setReduceProduct(null)}>
+        <Modal 
+          isOpen={true} // <--- TAMBAHKAN INI
+          title={`Reduce Stock: ${reduceProduct.name}`} 
+          onClose={() => setReduceProduct(null)}
+        >
           <ReduceStockForm
             product={reduceProduct}
             onSuccess={() => {
@@ -199,8 +213,13 @@ export default function Products() {
         </Modal>
       )}
 
+      {/* 4. Modal Adjust Stock */}
       {adjustProduct && (
-        <Modal title={`Adjust Stock: ${adjustProduct.name}`} onClose={() => setAdjustProduct(null)}>
+        <Modal 
+          isOpen={true} // <--- TAMBAHKAN INI
+          title={`Adjust Stock: ${adjustProduct.name}`} 
+          onClose={() => setAdjustProduct(null)}
+        >
           <AdjustStockForm
             product={adjustProduct}
             onSuccess={() => {

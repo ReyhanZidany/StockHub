@@ -10,7 +10,8 @@ import {
   Search,
   ChevronLeft,
   ChevronRight,
-  Truck // <--- 1. TAMBAHKAN IMPORT ICON TRUCK
+  Truck,
+  ShieldAlert
 } from "lucide-react";
 import { clearTokens } from "../utils/auth";
 
@@ -94,14 +95,14 @@ export default function Sidebar() {
           <ArrowRightLeft size={20} />
           {!isCollapsed && "Stock Movements"}
         </NavLink>
-
-        {/* --- 2. LOGIKA SUPPLIER DIPERBAIKI (Pakai linkClass biar konsisten) --- */}
         <NavLink to="/suppliers" className={linkClass}>
           <Truck size={20} />
           {!isCollapsed && "Suppliers"}
         </NavLink>
-        {/* ------------------------------------------------------------------ */}
-
+        <NavLink to="/audit-logs" className={linkClass}>
+          <ShieldAlert size={20} />
+          {!isCollapsed && "Audit Logs"}
+        </NavLink>
         <NavLink to="/notifications" className={linkClass}>
           <Bell size={20} />
           {!isCollapsed && "Notifications"}

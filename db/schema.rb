@@ -10,9 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_30_112910) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_30_155501) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "audit_logs", force: :cascade do |t|
+    t.string "action"
+    t.datetime "created_at", null: false
+    t.text "details"
+    t.integer "record_id"
+    t.string "record_type"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_audit_logs_on_user_id"
+  end
 
   create_table "products", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -32,7 +43,9 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_30_112910) do
     t.bigint "product_id", null: false
     t.integer "quantity"
     t.datetime "updated_at", null: false
+    t.bigint "user_id"
     t.index ["product_id"], name: "index_stock_movements_on_product_id"
+    t.index ["user_id"], name: "index_stock_movements_on_user_id"
   end
 
   create_table "suppliers", force: :cascade do |t|
@@ -47,11 +60,14 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_30_112910) do
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email"
+    t.string "name"
     t.string "password_digest"
     t.integer "role"
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "audit_logs", "users"
   add_foreign_key "products", "suppliers"
   add_foreign_key "stock_movements", "products"
+  add_foreign_key "stock_movements", "users"
 end

@@ -1,30 +1,33 @@
 module Inventory
   class ReduceStock
-    def initialize(
-      product_repository: Product,
-      movement_repository: StockMovement
-    )
+    def initialize(product_repository: Product, movement_repository: StockMovement)
       @products = product_repository
       @movements = movement_repository
     end
 
-    def call(product_id:, quantity:)
+    def call(product_id:, quantity:, user: nil)
       raise ArgumentError, "Quantity must be positive" if quantity <= 0
 
-      product = @products.find(product_id)
-      raise ArgumentError, "Insufficient stock" if product.stock < quantity
-
       ActiveRecord::Base.transaction do
-        product.update!(stock: product.stock - quantity)
+        # PENTING: Gunakan .lock sebelum find agar data tidak disentuh proses lain
+        product = @products.lock.find(product_id)
+
+        if product.stock < quantity
+          raise ArgumentError, "Insufficient stock for #{product.name} (Requested: #{quantity}, Available: #{product.stock})"
+        end
+
+        product.stock -= quantity
+        product.save!
 
         @movements.create!(
           product: product,
           quantity: quantity,
-          movement_type: "OUT"
+          movement_type: "OUT",
+          user: user
         )
-      end
 
-      product
+        product
+      end
     end
   end
 end

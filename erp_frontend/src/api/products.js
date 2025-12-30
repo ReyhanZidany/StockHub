@@ -29,3 +29,9 @@ export const adjustStock = async (id, actualStock) => {
   const response = await api.post(`/products/${id}/adjust_stock`, { actual_stock: actualStock });
   return response.data;
 };
+
+export const fetchStockMovements = async (filters = {}) => {
+  const params = new URLSearchParams(filters).toString();  
+  const response = await api.get(`/stock_movements?${params}`);
+  return response.data;
+};

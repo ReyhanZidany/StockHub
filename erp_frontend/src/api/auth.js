@@ -26,3 +26,8 @@ export async function refreshToken() {
 
 // Gunakan instance 'api' yang sudah punya interceptor
 export const login = (email, password) => api.post("/login", { email, password });
+
+export const updateProfile = async (userData) => {
+  const response = await api.put("/profile", { user: userData });
+  return response.data;
+};

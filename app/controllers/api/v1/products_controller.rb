@@ -10,6 +10,10 @@ module Api
         authorize Product 
         
         product = Product.create!(product_params)
+        
+        # LOGGING
+        record_activity("CREATED", product, "Created new product: #{product.name}")
+
         render json: product, status: :created
       end
 
@@ -19,8 +23,13 @@ module Api
 
         updated_product = Inventory::AddStock.new.call(
           product_id: params[:id],
-          quantity: params[:quantity].to_i
+          quantity: params[:quantity].to_i,
+          user: current_user
         )
+
+        # LOGGING
+        record_activity("ADD_STOCK", updated_product, "Added #{params[:quantity]} units to #{updated_product.name}")
+
         render json: updated_product
       end
 
@@ -30,8 +39,13 @@ module Api
 
         updated_product = Inventory::ReduceStock.new.call(
           product_id: params[:id],
-          quantity: params[:quantity].to_i
+          quantity: params[:quantity].to_i,
+          user: current_user
         )
+
+        # LOGGING
+        record_activity("REDUCE_STOCK", updated_product, "Sold/Reduced #{params[:quantity]} units from #{updated_product.name}")
+
         render json: updated_product
       end
 
@@ -41,8 +55,13 @@ module Api
 
         updated_product = Inventory::AdjustStock.new.call(
             product_id: params[:id],
-            actual_stock: params[:actual_stock].to_i
+            actual_stock: params[:actual_stock].to_i,
+            user: current_user
         )
+
+        # LOGGING
+        record_activity("ADJUST_STOCK", updated_product, "Adjusted stock to #{params[:actual_stock]} for #{updated_product.name}")
+
         render json: updated_product
       end
 
@@ -53,6 +72,7 @@ module Api
       end
 
       def product_params
+        # Pastikan :supplier_id ada di sini
         params.require(:product).permit(:name, :sku, :stock, :price, :supplier_id)
       end
     end
