@@ -59,19 +59,3 @@ The project emphasizes **clean domain logic**, service-oriented architecture, an
 | **HTTP Client** | **Fetch API** | Native async requests |
 
 ---
-
-## 🚀 Getting Started
-
-Follow these instructions to set up the project locally.
-
-### Prerequisites
-* **Ruby** (v3.0+)
-* **Node.js** (v18+) & **npm**
-* **PostgreSQL** (Running locally)
-
-### 1. Backend Setup (Rails)
-
-Navigate to the backend directory:
-
-```bash
-cd backend
