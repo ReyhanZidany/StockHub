@@ -5,7 +5,10 @@ import Products from "./pages/Products";
 import StockMovements from "./pages/StockMovements";
 import Suppliers from "./pages/Suppliers";
 import AuditLogs from "./pages/AuditLogs";
+import Finance from "./pages/Finance";
 import Settings from "./pages/Settings";
+import Users from "./pages/Users";
+import Notifications from "./pages/Notifications";  
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 
@@ -61,6 +64,30 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <Settings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/users"
+            element={
+              <ProtectedRoute>
+                <Users />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/finance"
+            element={
+              <ProtectedRoute>
+                <Finance />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/notifications"
+            element={
+              <ProtectedRoute>
+                <Notifications />
               </ProtectedRoute>
             }
           />

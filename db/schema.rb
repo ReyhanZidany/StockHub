@@ -10,9 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_30_155501) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_31_123528) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "accounts", force: :cascade do |t|
+    t.string "account_type", null: false
+    t.string "code", null: false
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.string "normal_balance", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_accounts_on_code", unique: true
+  end
 
   create_table "audit_logs", force: :cascade do |t|
     t.string "action"
@@ -25,7 +35,31 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_30_155501) do
     t.index ["user_id"], name: "index_audit_logs_on_user_id"
   end
 
+  create_table "journal_entries", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "date", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.string "description"
+    t.bigint "reference_id"
+    t.string "reference_type"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["reference_type", "reference_id"], name: "index_journal_entries_on_reference"
+    t.index ["user_id"], name: "index_journal_entries_on_user_id"
+  end
+
+  create_table "journal_line_items", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.datetime "created_at", null: false
+    t.decimal "credit", precision: 15, scale: 2, default: "0.0"
+    t.decimal "debit", precision: 15, scale: 2, default: "0.0"
+    t.bigint "journal_entry_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_journal_line_items_on_account_id"
+    t.index ["journal_entry_id"], name: "index_journal_line_items_on_journal_entry_id"
+  end
+
   create_table "products", force: :cascade do |t|
+    t.decimal "buy_price", precision: 15, scale: 2, default: "0.0"
     t.datetime "created_at", null: false
     t.string "name"
     t.decimal "price"
@@ -67,6 +101,9 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_30_155501) do
   end
 
   add_foreign_key "audit_logs", "users"
+  add_foreign_key "journal_entries", "users"
+  add_foreign_key "journal_line_items", "accounts"
+  add_foreign_key "journal_line_items", "journal_entries"
   add_foreign_key "products", "suppliers"
   add_foreign_key "stock_movements", "products"
   add_foreign_key "stock_movements", "users"

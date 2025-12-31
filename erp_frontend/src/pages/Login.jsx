@@ -33,25 +33,34 @@ export default function Login() {
     setLoading(true);
 
     try {
+      // response ini SUDAH berupa object data (karena api/auth.js me-return response.data)
       const response = await loginApi(email, password);
       
-      const accessToken = response.data.access_token || response.data.token || response.data.jwt;
-      const refreshToken = response.data.refresh_token || response.data.refreshToken;
-      const userData = response.data.user;
+      console.log("Response dari API:", response); // Debugging
+
+      // PERBAIKAN: Hapus ".data" di sini
+      // Backend Rails kita mengirim key: 'token', 'refresh_token', dan 'user'
+      const accessToken = response.token; 
+      const refreshToken = response.refresh_token;
+      const userData = response.user;
 
       if (accessToken) {
+        // Simpan ke LocalStorage via utils
         setTokens({
           accessToken: accessToken,
           refreshToken: refreshToken || ""
         });
+        
+        // Update Context & Redirect
         login(accessToken, userData);
         navigate("/dashboard");
       } else {
-        throw new Error("Login berhasil tapi token tidak diterima.");
+        throw new Error("Token tidak ditemukan dalam respon server.");
       }
 
     } catch (err) {
       console.error("Login Error:", err);
+      // Logic error handling sudah bagus
       const errorMsg = err.response?.data?.error || 
                        err.response?.data?.message || 
                        "Login failed. Please check your email or password.";
@@ -78,8 +87,8 @@ export default function Login() {
         {/* Left Section */}
         <div className="hidden lg:flex flex-col items-start text-white max-w-lg">
           <div className="mb-8 flex items-center gap-3">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-500/50 rotate-3 hover:rotate-6 transition-transform duration-300">
-              <Package className="w-8 h-8 text-white" />
+            <div className="w-16 h-16 transition-transform duration-300 overflow-hidden">
+              <img src="/stockhub.png" alt="StockHub Logo" className="w-full h-full object-cover" />
             </div>
             <div>
               <h1 className="text-3xl font-bold">StockHub</h1>
@@ -229,26 +238,6 @@ export default function Login() {
                     </>
                   )}
                 </button>
-
-                {/* Divider & Social Login (No Changes needed here) */}
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-200"></div>
-                  </div>
-                  <div className="relative flex justify-center text-sm">
-                    <span className="px-4 bg-white text-gray-500">Or continue with</span>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <button type="button" className="flex items-center justify-center gap-2 px-4 py-3 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors font-medium text-gray-700">
-                    <span className="text-sm">Google</span>
-                  </button>
-                  <button type="button" className="flex items-center justify-center gap-2 px-4 py-3 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors font-medium text-gray-700">
-                    <span className="text-sm">GitHub</span>
-                  </button>
-                </div>
-
               </form>
             </div>
             

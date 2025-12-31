@@ -1,32 +1,53 @@
 import { useState, useEffect } from "react";
-import { Loader, Save, Package, DollarSign, FileText, Truck } from "lucide-react"; // Import Truck icon
+import { Loader, Save, Package, DollarSign, FileText, Truck } from "lucide-react";
 import { createProduct } from "../api/products";
-import { fetchSuppliers } from "../api/suppliers"; // <--- 1. Import fetchSuppliers
+import { fetchSuppliers } from "../api/suppliers";
 
 export default function AddProductForm({ onSuccess }) {
   const [loading, setLoading] = useState(false);
-  const [suppliers, setSuppliers] = useState([]); // <--- 2. State untuk list supplier
+  const [suppliers, setSuppliers] = useState([]);
   
   const [formData, setFormData] = useState({
     name: "",
     sku: "",
     stock: 0,
     price: 0,
-    supplier_id: "", // <--- 3. State untuk menyimpan pilihan supplier
+    buy_price: 0,
+    supplier_id: "",
   });
 
-  // 4. Ambil data supplier saat form dimuat
   useEffect(() => {
     fetchSuppliers()
       .then((data) => setSuppliers(data))
       .catch((err) => console.error("Gagal ambil supplier", err));
   }, []);
 
+  // --- HELPER FUNCTIONS BARU ---
+
+  // 1. Format Angka ke Tampilan (Misal: 10000 -> "10.000")
+  const formatNumber = (num) => {
+    if (!num) return "";
+    // Menggunakan locale Indonesia biar titik jadi pemisah ribuan
+    return new Intl.NumberFormat("id-ID").format(num);
+  };
+
+  // 2. Handle Perubahan Input Angka
+  const handleNumberChange = (e, field) => {
+    // Ambil value, hapus semua karakter selain angka (termasuk titik/koma)
+    const rawValue = e.target.value.replace(/\D/g, "");
+    
+    setFormData({
+      ...formData,
+      [field]: rawValue ? parseInt(rawValue) : 0
+    });
+  };
+
+  // -----------------------------
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      // Kirim data ke backend (termasuk supplier_id)
       await createProduct(formData);
       onSuccess();
     } catch (error) {
@@ -72,37 +93,53 @@ export default function AddProductForm({ onSuccess }) {
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        {/* Stock */}
+        {/* Stock (Sekarang Auto Format) */}
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-1">Initial Stock</label>
           <input
-            type="number"
-            min="0"
+            type="text"           // Ganti jadi text biar bisa format
+            inputMode="numeric"   // Biar di HP muncul keyboard angka
             required
             className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-            value={formData.stock}
-            onChange={(e) => setFormData({ ...formData, stock: parseInt(e.target.value) || 0 })}
+            value={formatNumber(formData.stock)} // Tampilkan format cantik
+            onChange={(e) => handleNumberChange(e, "stock")} // Simpan angka murni
           />
         </div>
 
-        {/* Price */}
+        {/* Price (Sekarang Auto Format) */}
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-1">Price (IDR)</label>
           <div className="relative">
              <span className="absolute left-3 top-2 text-slate-500 text-sm font-semibold">Rp</span>
              <input
-              type="number"
-              min="0"
+              type="text"          // Ganti jadi text
+              inputMode="numeric"  // Keyboard angka
               required
               className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-              value={formData.price}
-              onChange={(e) => setFormData({ ...formData, price: parseInt(e.target.value) || 0 })}
+              value={formatNumber(formData.price)} // Tampilkan format cantik
+              onChange={(e) => handleNumberChange(e, "price")} // Simpan angka murni
+            />
+          </div>
+        </div>
+
+        {/* Buy Price (Sekarang Auto Format) */}
+        <div className="col-span-2">
+          <label className="block text-sm font-medium text-slate-700 mb-1">Buy Price / Cost Price (IDR)</label>
+          <div className="relative"> 
+             <span className="absolute left-3 top-2 text-slate-500 text-sm font-semibold">Rp</span>
+             <input
+              type="text"          // Ganti jadi text
+              inputMode="numeric"  // Keyboard angka
+              required
+              className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+              value={formatNumber(formData.buy_price)} // Tampilkan format cantik
+              onChange={(e) => handleNumberChange(e, "buy_price")} // Simpan angka murni
             />
           </div>
         </div>
       </div>
 
-      {/* --- 5. DROPDOWN SUPPLIER BARU --- */}
+      {/* Supplier Dropdown */}
       <div>
         <label className="block text-sm font-medium text-slate-700 mb-1">Supplier (Source)</label>
         <div className="relative">
@@ -119,7 +156,6 @@ export default function AddProductForm({ onSuccess }) {
               </option>
             ))}
           </select>
-          {/* Panah dropdown custom (visual) */}
           <div className="absolute right-3 top-3 pointer-events-none">
              <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
           </div>

@@ -3,7 +3,13 @@ module Api
     class ProductsController < ApplicationController
       def index
         authorize Product
-        render json: Product.all.order(created_at: :desc)
+        
+        # PERBAIKAN PENTING DI SINI:
+        # 1. Gunakan .includes(:supplier) biar database gak berat (N+1 problem solver)
+        # 2. Tambahkan include: :supplier di render json agar data supplier terkirim ke frontend
+        products = Product.includes(:supplier).order(created_at: :desc)
+        
+        render json: products, include: :supplier
       end
 
       def create
@@ -72,8 +78,8 @@ module Api
       end
 
       def product_params
-        # Pastikan :supplier_id ada di sini
-        params.require(:product).permit(:name, :sku, :stock, :price, :supplier_id)
+        # Pastikan :supplier_id ada di sini (Sudah benar)
+        params.require(:product).permit(:name, :sku, :stock, :price, :buy_price, :description, :supplier_id)
       end
     end
   end

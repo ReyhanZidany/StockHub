@@ -9,7 +9,6 @@ module Inventory
       raise ArgumentError, "Quantity must be positive" if quantity <= 0
 
       ActiveRecord::Base.transaction do
-        # PENTING: Gunakan .lock sebelum find agar data tidak disentuh proses lain
         product = @products.lock.find(product_id)
 
         if product.stock < quantity
@@ -19,12 +18,14 @@ module Inventory
         product.stock -= quantity
         product.save!
 
-        @movements.create!(
+        movement = @movements.create!( 
           product: product,
           quantity: quantity,
           movement_type: "OUT",
           user: user
         )
+
+        Accounting::RecordJournal.new.call(stock_movement: movement)
 
         product
       end

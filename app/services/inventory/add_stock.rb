@@ -14,12 +14,14 @@ module Inventory
         product.stock += quantity
         product.save!
 
-        @movements.create!(
+        movement = @movements.create!(
           product: product,
           quantity: quantity,
           movement_type: "IN",
           user: user
         )
+
+        Accounting::RecordJournal.new.call(stock_movement: movement)
 
         product
       end
