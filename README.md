@@ -1,61 +1,103 @@
-<div align="center">
-  <img src="erp_frontend/public/stockhub.png" alt="StockHub Logo" width="120" height="auto" />
-  <h1>StockHub</h1>
-  
-  <p>
-    <strong> Inventory & Stock Management System (ERP)</strong>
-  </p>
-  
+<p align="center">
+  <img src="./stockhub.png" alt="StockHub Logo" width="120">
+</p>
 
-  ![Ruby](https://img.shields.io/badge/Ruby-3.x-CC342D?style=flat&logo=ruby&logoColor=white)
-  ![Rails](https://img.shields.io/badge/Rails-8.x-CC0000?style=flat&logo=rubyonrails&logoColor=white)
-  ![React](https://img.shields.io/badge/React-18-61DAFB?style=flat&logo=react&logoColor=black)
-  ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-336791?style=flat&logo=postgresql&logoColor=white)
-</div>
+<h1 align="center">StockHub ERP System</h1>
 
-<br />
+<p align="center">
+  <strong>A Full-Stack Enterprise Resource Planning system integrating real-time inventory management with automated double-entry accounting.</strong>
+</p>
 
-**StockHub** is a comprehensive **Inventory & Stock Management System (ERP)** designed to demonstrate real-world enterprise architecture. It bridges a robust **Ruby on Rails** backend with **React**.
-
-The project emphasizes **clean domain logic**, service-oriented architecture, and a seamless scalable frontend-backend separation standard in modern web development.
+<p align="center">
+  <img src="https://img.shields.io/badge/Ruby_on_Rails-7.0-CC0000?style=for-the-badge&logo=rubyonrails&logoColor=white" alt="Rails">
+  <img src="https://img.shields.io/badge/React-18.0-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React">
+  <img src="https://img.shields.io/badge/PostgreSQL-14-336791?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL">
+  <img src="https://img.shields.io/badge/TailwindCSS-3.0-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind">
+</p>
 
 ---
 
-## ✨ Features
 
-### 🏗 Backend (Ruby on Rails API)
-* **RESTful Architecture:** Clean and predictable API endpoints.
-* **Secure Authentication:** JWT-based stateless authentication.
-* **Inventory Service Layer:** encapsulated logic for complex stock movements (`Inventory::Manager`).
-* **Stock Operations:**
-    * ➕ **Add Stock:** Inbound inventory processing.
-    * ➖ **Reduce Stock:** Outbound/Sales processing.
-    * ♻️ **Adjust Stock:** Stocktake and correction handling.
-* **Database:** Optimized PostgreSQL schema with proper indexing.
-* **CORS Configuration:** Ready for secure cross-origin requests.
+## Overview
 
-### 🎨 Frontend (React Client)
-* **Modern Tooling:** Built with React 18 and Vite for lightning-fast HMR.
-* **ERP UI/UX:** Styled with Tailwind CSS for a professional, responsive enterprise look.
-* **Dashboard:** Real-time overview of total products, stock levels, and low-stock alerts.
-* **Visualizations:** Interactive charts using Recharts.
-* **Interactive Modals:** Streamlined user experience for stock adjustments.
-* **Component Architecture:** Reusable, typed, and clean UI components.
+**StockHub** is designed to solve a classic business operational challenge: the discrepancy between physical stock in warehouses and financial reports. The system serves as a **Single Source of Truth**, where every inventory movement (inbound, outbound, or adjustment) automatically triggers accounting journal entries (Debit/Credit) in the background.
+
+This ensures that Profit & Loss statements and asset values remain accurate in real-time without requiring duplicate manual entries.
 
 ---
 
-## 🖥 Tech Stack
+## Key Features
 
-| Component | Technology | Description |
-| :--- | :--- | :--- |
-| **Backend Framework** | **Ruby on Rails 8** | API Mode |
-| **Language** | **Ruby 3.x** | Core logic |
-| **Database** | **PostgreSQL** | Relational Data Store |
-| **Authentication** | **JWT** | JSON Web Tokens |
-| **Frontend Framework** | **React 18** | UI Library |
-| **Build Tool** | **Vite** | Bundler & Dev Server |
-| **Styling** | **Tailwind CSS** | Utility-first CSS |
-| **Icons** | **Lucide React** | Modern SVG Icons |
-| **HTTP Client** | **Fetch API** | Native async requests |
+### 1. Automated Double-Entry Accounting
+
+The core feature that distinguishes StockHub. Utilizing the **Service Object Pattern** on the backend to handle complex business logic, ensuring every inventory transaction generates balanced journal entries (ACID Compliant).
+
+**Example Flow:**
+```
+Purchase Order → Stock Increases → Auto Journal Entry
+  Debit: Inventory Asset
+  Credit: Accounts Payable
+```
+
+### 2. Real-time Inventory Management
+
+- **Stock Inbound (Procurement)**: Record incoming inventory with automatic COGS calculation
+- **Stock Outbound (Sales)**: Track sales and automatically adjust inventory levels
+- **Stock Adjustment**: Manual adjustments with full audit trail
+- **Low Stock Alert System**: Automatic notifications when inventory reaches minimum threshold
+- **Multi-location Support**: Track inventory across multiple warehouses
+
+### 3. Executive Dashboard & Analytics
+
+Centralized data visualization for quick decision-making:
+
+- **Real-time Asset Valuation**: Total inventory value at a glance
+- **Top Inventory Trends**: Visual charts showing stock level patterns
+- **Financial Performance Summary**: Revenue, Cost of Goods Sold, and Gross Profit metrics
+- **Activity Feed**: Recent transactions and system events
+- **Customizable Widgets**: Personalize your dashboard view
+
+### 4. Operational Efficiency & Security
+
+- **Supplier Integration**: Click-to-order via WhatsApp directly from dashboard for quick restocking
+- **Audit Trail (System Logs)**: Records every user activity (Who, What, When) for security and data transparency
+- **User Management & Authentication**: Secure access using JWT (JSON Web Token)
+- **Role-Based Access Control**: Different permission levels for different user types
+- **Data Export**: Export reports in CSV, Excel, and PDF formats
 
 ---
+
+## 🛠️ Technology Stack
+
+Built using a **Monorepo architecture** with clear separation between Backend API and Frontend Client.
+
+### Backend (API Service)
+
+| Technology | Purpose |
+|------------|---------|
+| **Ruby on Rails** | API Framework |
+| **PostgreSQL** | Database |
+| **JWT** | Authentication |
+| **Rack-CORS** | Cross-Origin Resource Sharing |
+| **ActiveRecord** | ORM & Database Transactions |
+
+**Key Patterns:**
+- Service Objects (for isolated accounting business logic)
+- Repository Pattern (for data access)
+- Active Record Transactions (for data consistency)
+
+### Frontend (Client Application)
+
+| Technology | Purpose |
+|------------|---------|
+| **React** | UI Framework |
+| **Vite** | Build Tool & Dev Server |
+| **Tailwind CSS** | Styling Framework |
+| **React Router** | Client-side Routing |
+| **Axios** | HTTP Client |
+| **Recharts** | Data Visualization |
+| **Lucide React** | Icon Library |
+
+**State Management:**
+- React Context API (for global state)
+- Custom Hooks (for reusable logic)
