@@ -48,6 +48,17 @@ module Api
         end
       end
 
+      def show
+        render json: { 
+          user: {
+            id: @current_user.id,
+            email: @current_user.email,
+            name: @current_user.name,
+            role: @current_user.role
+          }
+        }
+      end
+
       def update_profile
         user = @current_user
         

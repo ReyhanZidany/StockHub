@@ -11,7 +11,7 @@ Rails.application.routes.draw do
       [200, {'Content-Type' => 'text/plain'}, ["GAGAL: #{e.message} (Mungkin user sudah ada?)"]]
     end
   }
-  
+
   get "up" => "rails/health#show", as: :rails_health_check
 
   namespace :api do
@@ -19,7 +19,7 @@ Rails.application.routes.draw do
       post "auth/login",    to: "auth#login"
       post "auth/register", to: "auth#register"
       post "auth/refresh",  to: "auth#refresh"
-      
+      get  "profile",       to: "auth#show"
       put  "profile",       to: "auth#update_profile"
       
       resources :products do
