@@ -1,8 +1,6 @@
 <p align="center">
-  <img src="erp_frontend/public/stockhub_logo.png" alt="StockHub Logo" width="120">
+  <img src="erp_frontend/public/stockhub_logo.png" alt="StockHub Logo" width="200">
 </p>
-
-<h1 align="center">StockHub ERP System</h1>
 
 <p align="center">
   <strong>A Full-Stack Enterprise Resource Planning system integrating real-time inventory management with automated double-entry accounting.</strong>
