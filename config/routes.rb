@@ -20,8 +20,8 @@ Rails.application.routes.draw do
       resources :audit_logs, only: [:index]
       resources :users, only: [:index, :create, :destroy]
 
-      get 'accounting/journals',    to: 'accounting
-      get 'accounting/profit_loss', to: 'accounting
+      get 'accounting/journals',    to: 'accounting'
+      get 'accounting/profit_loss', to: 'accounting'
     end
   end
 end
