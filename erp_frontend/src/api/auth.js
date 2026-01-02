@@ -1,17 +1,14 @@
 import axios from "axios";
 
-// --- KONFIGURASI ---
 const API_URL = "http://localhost:3000/api/v1";
 
-// 1. Buat Instance Axios Utama
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api/v1",
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// --- HELPER FUNCTIONS (Biar gak perlu file utils terpisah dulu) ---
 const getAccessToken = () => localStorage.getItem("token");
 const getRefreshToken = () => localStorage.getItem("refresh_token");
 const setTokens = (access, refresh) => {
@@ -24,7 +21,6 @@ const clearTokens = () => {
   localStorage.removeItem("user");
 };
 
-// --- INTERCEPTOR REQUEST (Pasang Token) ---
 api.interceptors.request.use(
   (config) => {
     const token = getAccessToken();
@@ -36,7 +32,6 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// --- INTERCEPTOR RESPONSE (Handle 401 & Refresh Token) ---
 api.interceptors.response.use(
   (response) => response, // Jika sukses, loloskan saja
   async (error) => {
