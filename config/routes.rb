@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get "up" => "rails/health#show", as: :rails_health_check
+
   namespace :api do
     namespace :v1 do
       post "auth/login",    to: "auth#login"
@@ -20,9 +22,8 @@ Rails.application.routes.draw do
       resources :audit_logs, only: [:index]
       resources :users, only: [:index, :create, :destroy]
       
-      get "up" => "rails/health#show", as: :rails_health_check
-      get 'accounting/journals',    to: 'accounting'
-      get 'accounting/profit_loss', to: 'accounting'
+      get 'accounting/journals',    to: 'accounting#journals'
+      get 'accounting/profit_loss', to: 'accounting#profit_loss'
     end
   end
 end
