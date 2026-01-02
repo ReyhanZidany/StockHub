@@ -88,7 +88,7 @@ export default function Login() {
         <div className="hidden lg:flex flex-col items-start text-white max-w-lg">
           <div className="mb-8 flex items-center gap-3">
             <div className="w-16 h-16 transition-transform duration-300 overflow-hidden">
-              <img src="/stockhub.png" alt="StockHub Logo" className="w-full h-full object-cover" />
+              <img src="/stockhub_logo_only_nobg.png" alt="StockHub Logo" className="w-full h-full object-cover" />
             </div>
             <div>
               <h1 className="text-3xl font-bold">StockHub</h1>

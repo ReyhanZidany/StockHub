@@ -44,7 +44,7 @@ export default function Sidebar() {
     >
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
-        className="absolute -right-5 top-1/2 transform -translate-y-1/2 h-12 w-5 bg-white border-y border-r border-gray-200 border-l-0 rounded-r-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-900 transition-colors z-50 cursor-pointer"
+        className="absolute -right-5 top-1/2 transform -translate-y-1/2 h-12 w-5 bg-white border-y border-r border-gray-200 border-l-0 rounded-r-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-600 transition-colors z-50 cursor-pointer"
         title={isCollapsed ? "Expand" : "Collapse"}
       >
         {isCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
@@ -53,7 +53,7 @@ export default function Sidebar() {
       <div className="h-16 flex items-center px-4 border-b border-gray-200 shrink-0 overflow-hidden">
         <div className={`flex items-center gap-3 transition-all duration-300 ${isCollapsed ? "mx-auto" : ""}`}>
           <div className="w-10 h-10 flex items-center justify-center shrink-0">
-             <img src="/stockhub.png" alt="Logo" className="w-10 h-10 object-contain" />
+             <img src="/stockhub_logo_only_nobg.png" alt="Logo" className="w-10 h-10 object-contain" />
           </div>
           <div className={`transition-all duration-300 overflow-hidden whitespace-nowrap ${isCollapsed ? "w-0 opacity-0" : "w-auto opacity-100"}`}>
             <p className="font-bold text-slate text-lg">StockHub</p>
