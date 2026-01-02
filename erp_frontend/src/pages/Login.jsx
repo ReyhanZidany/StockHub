@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { login as loginApi } from "../api/auth"; 
+import { login as loginApi } from "../api/axios"; 
 import { setTokens } from "../utils/auth";
 import { AuthContext } from "../context/AuthContext";
 

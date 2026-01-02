@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import Layout from "../components/Layout";
-import api from "../api/auth";
+import api from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
 import { 
   Users as UsersIcon, 

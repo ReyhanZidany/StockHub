@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from "react";
 import Layout from "../components/Layout";
 import { AuthContext } from "../context/AuthContext";
-import { updateProfile } from "../api/auth";
+import { updateProfile } from "../api/axios";
 import { User, Lock, Save, Loader, CheckCircle, Eye, EyeOff } from "lucide-react";
 
 export default function Settings() {

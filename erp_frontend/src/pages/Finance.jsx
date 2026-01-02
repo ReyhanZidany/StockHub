@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Layout from "../components/Layout";
-import api from "../api/auth";
+import api from "../api/axios";
 import { DollarSign, TrendingUp, TrendingDown, FileText } from "lucide-react";
 
 export default function Finance() {
