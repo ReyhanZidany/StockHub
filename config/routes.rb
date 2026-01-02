@@ -19,7 +19,8 @@ Rails.application.routes.draw do
       resources :suppliers
       resources :audit_logs, only: [:index]
       resources :users, only: [:index, :create, :destroy]
-
+      
+      get "up" => "rails/health#show", as: :rails_health_check
       get 'accounting/journals',    to: 'accounting'
       get 'accounting/profit_loss', to: 'accounting'
     end
