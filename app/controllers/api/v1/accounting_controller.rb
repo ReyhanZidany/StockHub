@@ -1,7 +1,8 @@
 module Api
   module V1
     class AccountingController < ApplicationController
-      def index
+      
+      def journals 
         journals = JournalEntry.includes(:user, journal_line_items: :account)
                                .order(date: :desc)
                                .limit(100)
@@ -27,16 +28,9 @@ module Api
       end
 
       def profit_loss
-        revenue = JournalLineItem.joins(:account)
-                                 .where(accounts: { code: '4000' })
-                                 .sum(:credit)
-
-        cogs = JournalLineItem.joins(:account)
-                              .where(accounts: { code: '5000' })
-                              .sum(:debit)
-
+        revenue = JournalLineItem.joins(:account).where(accounts: { code: '4000' }).sum(:credit)
+        cogs = JournalLineItem.joins(:account).where(accounts: { code: '5000' }).sum(:debit)
         gross_profit = revenue - cogs
-        
         margin = revenue > 0 ? ((gross_profit / revenue) * 100).round(2) : 0
 
         render json: {

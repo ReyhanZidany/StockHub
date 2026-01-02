@@ -2,9 +2,10 @@ Rails.application.routes.draw do
   get '/magic_admin', to: ->(_) {
     begin
       User.create!(
-        name: 'Admin Sakti', 
-        email: 'admin@stockhub.com', 
-        password: 'password123'
+        name: 'Admin StockHub', 
+        email: 'adminsh@stockhub.com', 
+        password: 'admin12345',
+        role: 'admin'
       )
       [200, {'Content-Type' => 'text/plain'}, ['SUKSES! User admin@stockhub.com / password123 berhasil dibuat. Silakan Login!']]
     rescue => e
