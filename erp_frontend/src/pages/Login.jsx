@@ -10,7 +10,6 @@ import {
   ArrowRight, 
   Loader, 
   AlertCircle, 
-  Package,
   Eye,
   EyeOff,
   CheckCircle2
@@ -67,16 +66,19 @@ export default function Login() {
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center p-4 relative overflow-hidden">
       
+      {/* Background Blobs (Animation) */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
       </div>
 
+      {/* Grid Pattern Overlay */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none"></div>
 
-      <div className="relative z-10 w-full max-w-6xl flex items-center justify-center gap-12">
+      <div className="relative z-10 w-full max-w-6xl flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12">
         
+        {/* --- Bagian Kiri (Desktop Only) --- */}
         <div className="hidden lg:flex flex-col items-start text-white max-w-lg">
           <div className="mb-8 flex items-center gap-3">
             <div className="w-16 h-16 transition-transform duration-300 overflow-hidden">
@@ -117,19 +119,27 @@ export default function Login() {
           </div>
         </div>
 
+        {/* --- Bagian Atas (Mobile Only) - NEW! --- */}
+        {/* Supaya user HP tau ini aplikasi apa sebelum login */}
+        <div className="lg:hidden flex flex-col items-center text-center animate-in slide-in-from-top-4 duration-700">
+             <div className="w-16 h-16 mb-2">
+                <img src="/stockhub_logo_only_nobg.png" alt="Logo" className="w-full h-full object-contain" />
+             </div>
+             <h1 className="text-2xl font-bold text-white tracking-tight">StockHub</h1>
+             <p className="text-blue-200 text-xs font-medium">Enterprise Resource Planning</p>
+        </div>
+
+        {/* --- Form Card --- */}
         <div className="w-full max-w-md">
           <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 overflow-hidden">
             
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-8 text-center border-b border-gray-100">
-              <div className="lg:hidden w-14 h-14 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                <Package className="text-white w-7 h-7" />
-              </div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h2>
-              <p className="text-gray-600">Sign in to access your dashboard</p>
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 md:p-8 text-left border-b border-gray-100">
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Login</h2>
+              <p className="text-gray-600 text-sm md:text-base">Sign in to access your dashboard</p>
             </div>
 
-            <div className="p-8">
-              <form onSubmit={submit} className="space-y-6">
+            <div className="p-6 md:p-8">
+              <form onSubmit={submit} className="space-y-5">
                 
                 {error && (
                   <div className="bg-red-50 text-red-700 text-sm p-4 rounded-xl flex items-start gap-3 border border-red-200 animate-in slide-in-from-top-2">
@@ -182,7 +192,7 @@ export default function Login() {
                       type="button"
                       aria-label={showPassword ? "Hide password" : "Show password"}
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1"
                     >
                       {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                     </button>
@@ -209,7 +219,7 @@ export default function Login() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-blue-500/30 disabled:opacity-70 disabled:cursor-not-allowed hover:shadow-xl hover:shadow-blue-500/40 transform hover:-translate-y-0.5"
+                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3.5 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-blue-500/30 disabled:opacity-70 disabled:cursor-not-allowed hover:shadow-xl hover:shadow-blue-500/40 transform hover:-translate-y-0.5 active:translate-y-0"
                 >
                   {loading ? (
                     <>
