@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="erp_frontend/public/stockhub_logo.png" alt="StockHub Logo" width="200">
+  <img src="erp_frontend/public/stockhub_logo.png" alt="StockHub Logo" width="280">
 </p>
 
 <p align="center">
