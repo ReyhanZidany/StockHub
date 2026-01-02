@@ -20,7 +20,8 @@ Rails.application.routes.draw do
       post "auth/register", to: "auth#register"
       post "auth/refresh",  to: "auth#refresh"
       get  "profile",       to: "auth#show"
-      put  "profile",       to: "auth#update_profile"
+      get  "auth/profile",  to: "auth#show" 
+      get  "auth/me",       to: "auth#show"
       
       resources :products do
         member do

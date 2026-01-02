@@ -53,8 +53,8 @@ module Api
           user: {
             id: @current_user.id,
             email: @current_user.email,
-            name: @current_user.name,
-            role: @current_user.role
+            role: @current_user.role,
+            name: @current_user.name || @current_user.email.split('@')[0].capitalize
           }
         }
       end
