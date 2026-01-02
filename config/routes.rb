@@ -1,16 +1,12 @@
 Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
-      # --- AUTH ROUTES (FIXED) ---
-      # Tambahkan "auth/" di depannya agar sesuai request frontend (/api/v1/auth/login)
       post "auth/login",    to: "auth#login"
       post "auth/register", to: "auth#register"
       post "auth/refresh",  to: "auth#refresh"
       
-      # Route untuk update profile
       put  "profile",       to: "auth#update_profile"
       
-      # --- RESOURCES LAINNYA ---
       resources :products do
         member do
           post :add_stock
@@ -24,9 +20,8 @@ Rails.application.routes.draw do
       resources :audit_logs, only: [:index]
       resources :users, only: [:index, :create, :destroy]
 
-      # Accounting Routes
-      get 'accounting/journals',    to: 'accounting#index'
-      get 'accounting/profit_loss', to: 'accounting#profit_loss'
+      get 'accounting/journals',    to: 'accounting
+      get 'accounting/profit_loss', to: 'accounting
     end
   end
 end

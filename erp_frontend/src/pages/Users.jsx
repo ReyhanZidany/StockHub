@@ -21,7 +21,6 @@ export default function Users() {
   const [showModal, setShowModal] = useState(false);
   const [processing, setProcessing] = useState(false);
 
-  // Form State
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -111,16 +110,13 @@ export default function Users() {
                 {users.map((u) => (
                   <tr key={u.id} className="hover:bg-slate-50/50 transition-colors">
                     
-                    {/* Name & Email */}
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold">
-                          {/* FIX: Check if name exists before getting charAt */}
                           {u.name ? u.name.charAt(0).toUpperCase() : "?"}
                         </div>
                         <div>
                           <p className="font-semibold text-slate-800 flex items-center gap-2">
-                            {/* FIX: Fallback if name is null */}
                             {u.name || "Unknown User"}
                             {currentUser.id === u.id && (
                               <span className="text-[10px] bg-slate-100 text-slate-500 px-1.5 rounded border border-slate-200">YOU</span>
@@ -133,7 +129,6 @@ export default function Users() {
                       </div>
                     </td>
 
-                    {/* Role Badge */}
                     <td className="px-6 py-4">
                       {u.role === 'admin' ? (
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-700 border border-purple-200 uppercase tracking-wide">
@@ -146,7 +141,6 @@ export default function Users() {
                       )}
                     </td>
 
-                    {/* Date */}
                     <td className="px-6 py-4 text-slate-500">
                       <div className="flex items-center gap-2">
                         <Calendar size={14} className="text-slate-400"/>
@@ -154,7 +148,6 @@ export default function Users() {
                       </div>
                     </td>
 
-                    {/* Action */}
                     <td className="px-6 py-4 text-right">
                       {currentUser.id !== u.id && (
                         <button 
@@ -174,7 +167,6 @@ export default function Users() {
         )}
       </div>
 
-      {/* --- MODAL ADD USER --- */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">

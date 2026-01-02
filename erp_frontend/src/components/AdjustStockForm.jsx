@@ -14,7 +14,6 @@ export default function AdjustStockForm({ product, onSuccess }) {
   const [actualStock, setActualStock] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Logic Kalkulasi Selisih
   const systemStock = product?.stock || 0;
   const physicalStock = actualStock === "" ? systemStock : Number(actualStock);
   const difference = physicalStock - systemStock;
@@ -37,7 +36,6 @@ export default function AdjustStockForm({ product, onSuccess }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       
-      {/* 1. INFO PRODUK */}
       <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 flex items-start gap-4">
         <div className="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0">
           <ClipboardCheck className="text-slate-500" size={20} />
@@ -50,7 +48,6 @@ export default function AdjustStockForm({ product, onSuccess }) {
         </div>
       </div>
 
-      {/* 2. INPUT STOK FISIK */}
       <div className="space-y-2">
         <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
           Actual Physical Stock
@@ -75,7 +72,6 @@ export default function AdjustStockForm({ product, onSuccess }) {
         </p>
       </div>
 
-      {/* 3. PREVIEW SELISIH (Diff Calculation) */}
       {actualStock !== "" && difference !== 0 && (
         <div className={`flex items-center justify-between p-3 rounded-lg border text-sm ${
           difference > 0 
@@ -99,7 +95,6 @@ export default function AdjustStockForm({ product, onSuccess }) {
         </div>
       )}
 
-      {/* 4. TOMBOL SUBMIT */}
       <button
         type="submit"
         disabled={loading || actualStock === ""}

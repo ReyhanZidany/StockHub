@@ -4,7 +4,6 @@ class JournalEntry < ApplicationRecord
   
   has_many :journal_line_items, dependent: :destroy
   
-  # Validasi Sakral: Total Debit HARUS SAMA DENGAN Total Credit
   validate :must_be_balanced
 
   private

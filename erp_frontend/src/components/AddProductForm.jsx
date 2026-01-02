@@ -22,18 +22,13 @@ export default function AddProductForm({ onSuccess }) {
       .catch((err) => console.error("Gagal ambil supplier", err));
   }, []);
 
-  // --- HELPER FUNCTIONS BARU ---
 
-  // 1. Format Angka ke Tampilan (Misal: 10000 -> "10.000")
   const formatNumber = (num) => {
     if (!num) return "";
-    // Menggunakan locale Indonesia biar titik jadi pemisah ribuan
     return new Intl.NumberFormat("id-ID").format(num);
   };
 
-  // 2. Handle Perubahan Input Angka
   const handleNumberChange = (e, field) => {
-    // Ambil value, hapus semua karakter selain angka (termasuk titik/koma)
     const rawValue = e.target.value.replace(/\D/g, "");
     
     setFormData({
@@ -42,7 +37,6 @@ export default function AddProductForm({ onSuccess }) {
     });
   };
 
-  // -----------------------------
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -60,7 +54,6 @@ export default function AddProductForm({ onSuccess }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {/* Product Name */}
       <div>
         <label className="block text-sm font-medium text-slate-700 mb-1">Product Name</label>
         <div className="relative">
@@ -76,7 +69,6 @@ export default function AddProductForm({ onSuccess }) {
         </div>
       </div>
 
-      {/* SKU */}
       <div>
         <label className="block text-sm font-medium text-slate-700 mb-1">SKU (Unique Code)</label>
         <div className="relative">
@@ -93,53 +85,49 @@ export default function AddProductForm({ onSuccess }) {
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        {/* Stock (Sekarang Auto Format) */}
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-1">Initial Stock</label>
           <input
-            type="text"           // Ganti jadi text biar bisa format
-            inputMode="numeric"   // Biar di HP muncul keyboard angka
+            type="text"
+            inputMode="numeric"
             required
             className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-            value={formatNumber(formData.stock)} // Tampilkan format cantik
-            onChange={(e) => handleNumberChange(e, "stock")} // Simpan angka murni
+            value={formatNumber(formData.stock)}
+            onChange={(e) => handleNumberChange(e, "stock")}
           />
         </div>
 
-        {/* Price (Sekarang Auto Format) */}
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-1">Price (IDR)</label>
           <div className="relative">
              <span className="absolute left-3 top-2 text-slate-500 text-sm font-semibold">Rp</span>
              <input
-              type="text"          // Ganti jadi text
-              inputMode="numeric"  // Keyboard angka
+              type="text"
+              inputMode="numeric"
               required
               className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-              value={formatNumber(formData.price)} // Tampilkan format cantik
-              onChange={(e) => handleNumberChange(e, "price")} // Simpan angka murni
+              value={formatNumber(formData.price)}
+              onChange={(e) => handleNumberChange(e, "price")}
             />
           </div>
         </div>
 
-        {/* Buy Price (Sekarang Auto Format) */}
         <div className="col-span-2">
           <label className="block text-sm font-medium text-slate-700 mb-1">Buy Price / Cost Price (IDR)</label>
           <div className="relative"> 
              <span className="absolute left-3 top-2 text-slate-500 text-sm font-semibold">Rp</span>
              <input
-              type="text"          // Ganti jadi text
-              inputMode="numeric"  // Keyboard angka
+              type="text"
+              inputMode="numeric"
               required
               className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-              value={formatNumber(formData.buy_price)} // Tampilkan format cantik
-              onChange={(e) => handleNumberChange(e, "buy_price")} // Simpan angka murni
+              value={formatNumber(formData.buy_price)}
+              onChange={(e) => handleNumberChange(e, "buy_price")}
             />
           </div>
         </div>
       </div>
 
-      {/* Supplier Dropdown */}
       <div>
         <label className="block text-sm font-medium text-slate-700 mb-1">Supplier (Source)</label>
         <div className="relative">

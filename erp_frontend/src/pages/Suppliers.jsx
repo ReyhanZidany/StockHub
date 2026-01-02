@@ -13,7 +13,6 @@ export default function Suppliers() {
   const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading] = useState(true);
   
-  // State untuk Modal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingSupplier, setEditingSupplier] = useState(null);
 
@@ -107,7 +106,6 @@ export default function Suppliers() {
         )}
       </div>
 
-      {/* Modal untuk Create & Edit */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

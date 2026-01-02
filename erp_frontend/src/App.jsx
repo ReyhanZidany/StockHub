@@ -91,8 +91,6 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-
-          {/* 4. Catch-all Route (Untuk halaman 404/Tidak Ditemukan) */}
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </BrowserRouter>

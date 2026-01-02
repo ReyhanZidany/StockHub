@@ -4,9 +4,6 @@ module Api
       def index
         authorize Product
         
-        # PERBAIKAN PENTING DI SINI:
-        # 1. Gunakan .includes(:supplier) biar database gak berat (N+1 problem solver)
-        # 2. Tambahkan include: :supplier di render json agar data supplier terkirim ke frontend
         products = Product.includes(:supplier).order(created_at: :desc)
         
         render json: products, include: :supplier
@@ -17,7 +14,6 @@ module Api
         
         product = Product.create!(product_params)
         
-        # LOGGING
         record_activity("CREATED", product, "Created new product: #{product.name}")
 
         render json: product, status: :created
@@ -33,7 +29,6 @@ module Api
           user: current_user
         )
 
-        # LOGGING
         record_activity("ADD_STOCK", updated_product, "Added #{params[:quantity]} units to #{updated_product.name}")
 
         render json: updated_product
@@ -49,7 +44,6 @@ module Api
           user: current_user
         )
 
-        # LOGGING
         record_activity("REDUCE_STOCK", updated_product, "Sold/Reduced #{params[:quantity]} units from #{updated_product.name}")
 
         render json: updated_product
@@ -65,7 +59,6 @@ module Api
             user: current_user
         )
 
-        # LOGGING
         record_activity("ADJUST_STOCK", updated_product, "Adjusted stock to #{params[:actual_stock]} for #{updated_product.name}")
 
         render json: updated_product
@@ -78,7 +71,6 @@ module Api
       end
 
       def product_params
-        # Pastikan :supplier_id ada di sini (Sudah benar)
         params.require(:product).permit(:name, :sku, :stock, :price, :buy_price, :description, :supplier_id)
       end
     end

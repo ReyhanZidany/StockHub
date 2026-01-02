@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Layout from "../components/Layout";
-import api from "../api/auth"; // Pakai axios instance yang sudah ada auth-nya
+import api from "../api/auth";
 import { DollarSign, TrendingUp, TrendingDown, FileText } from "lucide-react";
 
 export default function Finance() {
@@ -27,7 +27,6 @@ export default function Finance() {
     fetchData();
   }, []);
 
-  // Format Mata Uang IDR
   const formatIDR = (num) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(num);
 
   return (
@@ -40,9 +39,7 @@ export default function Finance() {
         <p className="text-slate-500 text-sm">Real-time accounting generated from inventory movements.</p>
       </div>
 
-      {/* --- STATS CARDS --- */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        {/* REVENUE */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 bg-blue-100 rounded-lg text-blue-600"><TrendingUp size={20}/></div>
@@ -51,7 +48,6 @@ export default function Finance() {
           <p className="text-2xl font-bold text-slate-800">{formatIDR(stats.revenue)}</p>
         </div>
 
-        {/* COGS */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 bg-orange-100 rounded-lg text-orange-600"><TrendingDown size={20}/></div>
@@ -60,7 +56,6 @@ export default function Finance() {
           <p className="text-2xl font-bold text-slate-800">{formatIDR(stats.cogs)}</p>
         </div>
 
-        {/* PROFIT */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 bg-emerald-100 rounded-lg text-emerald-600"><DollarSign size={20}/></div>
@@ -73,7 +68,6 @@ export default function Finance() {
         </div>
       </div>
 
-      {/* --- JOURNAL TABLE --- */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <div className="p-4 border-b border-slate-100 flex items-center gap-2">
           <FileText size={18} className="text-slate-400"/>
@@ -102,7 +96,6 @@ export default function Finance() {
                     <div className="text-xs text-slate-400 mt-1">Ref: {journal.reference} • By: {journal.user}</div>
                   </td>
                   <td className="px-6 py-4 align-top">
-                    {/* Render Debit/Kredit Lines */}
                     <div className="space-y-1">
                       {journal.lines.map((line, idx) => (
                         <div key={idx} className="flex justify-between text-xs border-b border-dashed border-slate-100 last:border-0 pb-1">

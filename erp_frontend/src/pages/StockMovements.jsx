@@ -9,17 +9,14 @@ export default function StockMovements() {
   const [movements, setMovements] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // State untuk Filter
   const [filters, setFilters] = useState({
     startDate: "",
     endDate: "",
     type: "ALL"
   });
 
-  // Fungsi Load Data (Menerima parameter filter)
   const loadData = (currentFilters = {}) => {
     setLoading(true);
-    // Konversi key camelCase ke snake_case untuk Rails
     const apiParams = {
       start_date: currentFilters.startDate,
       end_date: currentFilters.endDate,
@@ -32,18 +29,15 @@ export default function StockMovements() {
       .finally(() => setLoading(false));
   };
 
-  // Load awal (tanpa filter)
   useEffect(() => {
     loadData(filters);
-  }, []); // Run once
+  }, []);
 
-  // Handle tombol "Apply Filter"
   const handleFilter = (e) => {
     e.preventDefault();
     loadData(filters);
   };
 
-  // Handle tombol "Reset"
   const handleReset = () => {
     const resetState = { startDate: "", endDate: "", type: "ALL" };
     setFilters(resetState);
@@ -92,11 +86,9 @@ export default function StockMovements() {
         <p className="text-slate-500 text-sm mt-1">Track every item entering or leaving your warehouse.</p>
       </div>
 
-      {/* --- FILTER BAR --- */}
       <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 mb-6">
         <form onSubmit={handleFilter} className="flex flex-col md:flex-row md:items-end gap-4">
           
-          {/* Filter Tanggal Mulai */}
           <div className="flex-1">
             <label className="text-xs font-semibold text-slate-500 uppercase mb-1 flex items-center gap-1">
               <Calendar size={12}/> Start Date
@@ -109,7 +101,6 @@ export default function StockMovements() {
             />
           </div>
 
-          {/* Filter Tanggal Akhir */}
           <div className="flex-1">
             <label className="text-xs font-semibold text-slate-500 uppercase mb-1 flex items-center gap-1">
               <Calendar size={12}/> End Date
@@ -122,7 +113,6 @@ export default function StockMovements() {
             />
           </div>
 
-          {/* Filter Tipe Transaksi */}
           <div className="flex-1">
              <label className="text-xs font-semibold text-slate-500 uppercase mb-1 flex items-center gap-1">
               <Filter size={12}/> Transaction Type
@@ -139,7 +129,6 @@ export default function StockMovements() {
             </select>
           </div>
 
-          {/* Tombol Action */}
           <div className="flex gap-2">
             <button 
               type="submit" 
@@ -161,7 +150,6 @@ export default function StockMovements() {
         </form>
       </div>
 
-      {/* --- TABLE --- */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         {loading ? (
           <div className="p-12"><Loading /></div>

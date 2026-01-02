@@ -12,20 +12,15 @@ module Inventory
       raise ArgumentError, "Stock must be >= 0" if actual_stock < 0
 
       ActiveRecord::Base.transaction do
-        # 1. LOCK DULU baru ambil data
         product = @products.lock.find(product_id)
 
-        # 2. Hitung selisih berdasarkan data yang sudah di-lock (paling update)
         old_stock = product.stock
         difference = actual_stock - old_stock
 
-        # 3. Early return jika ternyata tidak ada perubahan
         return product if difference.zero?
 
-        # 4. UPDATE STOK (Bagian ini yang tadi hilang)
         product.update!(stock: actual_stock)
 
-        # 5. Catat Movement
         @movements.create!(
           product: product,
           quantity: difference.abs,

@@ -27,7 +27,6 @@ module Api
       end
 
       def profit_loss
-        # Pastikan query menggunakan tabel 'accounts' (jamak)
         revenue = JournalLineItem.joins(:account)
                                  .where(accounts: { code: '4000' })
                                  .sum(:credit)
@@ -38,7 +37,6 @@ module Api
 
         gross_profit = revenue - cogs
         
-        # Cegah pembagian dengan nol (Zero Division Error)
         margin = revenue > 0 ? ((gross_profit / revenue) * 100).round(2) : 0
 
         render json: {

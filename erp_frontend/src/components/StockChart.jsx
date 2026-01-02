@@ -11,12 +11,11 @@ import {
 import { Package } from 'lucide-react';
 
 export default function StockChart({ products }) {
-  // 1. Ambil Top 10 Produk dengan stok terbanyak
   const data = [...products]
     .sort((a, b) => (parseInt(b.stock) || 0) - (parseInt(a.stock) || 0))
     .slice(0, 10)
     .map(p => ({
-      name: p.name.length > 15 ? p.name.substring(0, 15) + '...' : p.name, // Pendekkan nama biar grafik rapi
+      name: p.name.length > 15 ? p.name.substring(0, 15) + '...' : p.name,
       stock: parseInt(p.stock) || 0,
       sku: p.sku
     }));
@@ -60,7 +59,6 @@ export default function StockChart({ products }) {
             
             <Bar dataKey="stock" radius={[0, 4, 4, 0]} barSize={20}>
               {data.map((entry, index) => (
-                // Warna gradient-like: Stok banyak = Indigo, Stok dikit = Slate
                 <Cell key={`cell-${index}`} fill={index < 3 ? '#4f46e5' : '#94a3b8'} />
               ))}
             </Bar>

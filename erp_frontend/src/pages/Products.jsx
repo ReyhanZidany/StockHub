@@ -66,7 +66,6 @@ export default function Products() {
 
   return (
     <Layout>
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-2xl font-bold text-slate-800">Products Inventory</h1>
@@ -94,9 +93,7 @@ export default function Products() {
         </div>
       </div>
 
-      {/* Main Content Box */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        {/* Search Bar */}
         <div className="p-4 border-b border-slate-100 bg-slate-50/50">
            <div className="relative max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
@@ -110,7 +107,6 @@ export default function Products() {
           </div>
         </div>
 
-        {/* Table Content */}
         {loading ? (
           <div className="p-12"><Loading /></div>
         ) : filteredProducts.length === 0 ? (
@@ -145,7 +141,6 @@ export default function Products() {
                   <Minus size={18} />
                 </button>
 
-                {/* Fitur Adjust Stock: Admin & Manager Only */}
                 {user?.role !== "staff" && (
                   <button
                     onClick={() => setAdjustProduct(product)}
@@ -160,13 +155,11 @@ export default function Products() {
           />
         )}
       </div> 
-      {/* ^^^ PENUTUP DIV UTAMA HARUS DI SINI ^^^ */}
 
 
-      {/* --- MODALS SECTION --- */}
       {showModal && (
         <Modal 
-          isOpen={true} // <--- TAMBAHKAN INI
+          isOpen={true}
           title="Add New Product" 
           onClose={() => setShowModal(false)}
         >
@@ -179,10 +172,9 @@ export default function Products() {
         </Modal>
       )}
 
-      {/* 2. Modal Add Stock */}
       {selectedProduct && (
         <Modal 
-          isOpen={true} // <--- TAMBAHKAN INI
+          isOpen={true}
           title={`Add Stock: ${selectedProduct.name}`} 
           onClose={() => setSelectedProduct(null)}
         >
@@ -196,10 +188,9 @@ export default function Products() {
         </Modal>
       )}
 
-      {/* 3. Modal Reduce Stock */}
       {reduceProduct && (
         <Modal 
-          isOpen={true} // <--- TAMBAHKAN INI
+          isOpen={true}
           title={`Reduce Stock: ${reduceProduct.name}`} 
           onClose={() => setReduceProduct(null)}
         >
@@ -213,10 +204,9 @@ export default function Products() {
         </Modal>
       )}
 
-      {/* 4. Modal Adjust Stock */}
       {adjustProduct && (
         <Modal 
-          isOpen={true} // <--- TAMBAHKAN INI
+          isOpen={true}
           title={`Adjust Stock: ${adjustProduct.name}`} 
           onClose={() => setAdjustProduct(null)}
         >

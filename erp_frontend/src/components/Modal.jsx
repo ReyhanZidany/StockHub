@@ -1,10 +1,6 @@
-// Tambahkan 'isOpen' di dalam kurung kurawal (props)
 export default function Modal({ isOpen, title, onClose, children }) {
   
-  // --- LOGIKA PENTING ---
-  // Jika isOpen bernilai false, jangan tampilkan apa-apa (return null).
   if (!isOpen) return null;
-  // ----------------------
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 animate-in fade-in duration-200">

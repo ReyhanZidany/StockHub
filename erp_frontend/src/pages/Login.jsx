@@ -33,25 +33,20 @@ export default function Login() {
     setLoading(true);
 
     try {
-      // response ini SUDAH berupa object data (karena api/auth.js me-return response.data)
       const response = await loginApi(email, password);
       
-      console.log("Response dari API:", response); // Debugging
+      console.log("Response dari API:", response);
 
-      // PERBAIKAN: Hapus ".data" di sini
-      // Backend Rails kita mengirim key: 'token', 'refresh_token', dan 'user'
       const accessToken = response.token; 
       const refreshToken = response.refresh_token;
       const userData = response.user;
 
       if (accessToken) {
-        // Simpan ke LocalStorage via utils
         setTokens({
           accessToken: accessToken,
           refreshToken: refreshToken || ""
         });
         
-        // Update Context & Redirect
         login(accessToken, userData);
         navigate("/dashboard");
       } else {
@@ -60,7 +55,6 @@ export default function Login() {
 
     } catch (err) {
       console.error("Login Error:", err);
-      // Logic error handling sudah bagus
       const errorMsg = err.response?.data?.error || 
                        err.response?.data?.message || 
                        "Login failed. Please check your email or password.";
@@ -73,7 +67,6 @@ export default function Login() {
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center p-4 relative overflow-hidden">
       
-      {/* Background Animation */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
@@ -84,7 +77,6 @@ export default function Login() {
 
       <div className="relative z-10 w-full max-w-6xl flex items-center justify-center gap-12">
         
-        {/* Left Section */}
         <div className="hidden lg:flex flex-col items-start text-white max-w-lg">
           <div className="mb-8 flex items-center gap-3">
             <div className="w-16 h-16 transition-transform duration-300 overflow-hidden">
@@ -125,7 +117,6 @@ export default function Login() {
           </div>
         </div>
 
-        {/* Right Section - Login Form */}
         <div className="w-full max-w-md">
           <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 overflow-hidden">
             
@@ -150,18 +141,16 @@ export default function Login() {
                   </div>
                 )}
 
-                {/* EMAIL INPUT */}
                 <div className="space-y-2">
-                  {/* FIX 1: Tambahkan htmlFor yang sesuai dengan id input */}
                   <label htmlFor="email" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
                     <Mail size={16} className="text-gray-500" />
                     Email Address
                   </label>
                   <div className="relative group">
                     <input
-                      id="email"            // FIX 2: Tambahkan ID unik
-                      name="email"          // FIX 3: Tambahkan Name
-                      autoComplete="email"  // FIX 4: Bantu browser autocomplete
+                      id="email"
+                      name="email"
+                      autoComplete="email"
                       type="email"
                       required
                       className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none text-gray-900 bg-white group-hover:border-gray-400"
@@ -172,7 +161,6 @@ export default function Login() {
                   </div>
                 </div>
 
-                {/* PASSWORD INPUT */}
                 <div className="space-y-2">
                   <label htmlFor="password" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
                     <Lock size={16} className="text-gray-500" />
@@ -185,7 +173,6 @@ export default function Login() {
                     autoComplete="current-password"
                     type={showPassword ? "text" : "password"}
                     required
-                    // PERHATIKAN BARIS INI (Pastikan tercopy semua sampai ujung kanan)
                     className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none text-gray-900 bg-white group-hover:border-gray-400"
                     placeholder="••••••••"
                     value={password}
@@ -193,7 +180,7 @@ export default function Login() {
                   />
                     <button
                       type="button"
-                      aria-label={showPassword ? "Hide password" : "Show password"} // A11y
+                      aria-label={showPassword ? "Hide password" : "Show password"}
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                     >
@@ -202,13 +189,11 @@ export default function Login() {
                   </div>
                 </div>
 
-                {/* CHECKBOX REMEMBER ME */}
                 <div className="flex items-center justify-between">
-                  {/* FIX: Tambahkan htmlFor */}
                   <label htmlFor="remember_me" className="flex items-center gap-2 cursor-pointer group">
                     <input
-                      id="remember_me"      // FIX: ID unik
-                      name="remember_me"    // FIX: Name
+                      id="remember_me"
+                      name="remember_me"
                       type="checkbox"
                       checked={rememberMe}
                       onChange={(e) => setRememberMe(e.target.checked)}

@@ -1,7 +1,6 @@
 module Api
   module V1
     class AuthController < ApplicationController
-      # Update: Skip autentikasi untuk login DAN refresh
       skip_before_action :authenticate_request, only: [:login, :refresh, :register]
 
       def login
@@ -12,7 +11,7 @@ module Api
           
           render json: { 
             token: token,
-            refresh_token: token, # Kita gunakan token yang sama sebagai refresh token (Simplifikasi)
+            refresh_token: token,
             user: {
               id: user.id,
               email: user.email,
@@ -25,7 +24,6 @@ module Api
         end
       end
 
-      # --- TAMBAHAN BARU: LOGIC REFRESH TOKEN ---
       def refresh
         token = params[:refresh_token]
         
@@ -34,11 +32,9 @@ module Api
         end
 
         begin
-          # Decode token lama untuk memastikan validitasnya
           decoded = Auth::JsonWebToken.decode(token)
           user = User.find(decoded[:user_id])
           
-          # Buat token baru yang segar
           new_token = Auth::JsonWebToken.encode(user_id: user.id, role: user.role)
           
           render json: { 
@@ -51,7 +47,6 @@ module Api
           render json: { error: 'Invalid refresh token' }, status: :unauthorized
         end
       end
-      # ------------------------------------------
 
       def update_profile
         user = @current_user
@@ -89,7 +84,6 @@ module Api
       end
       
       def register
-         # ... (Code register jika ada) ...
       end
 
       private

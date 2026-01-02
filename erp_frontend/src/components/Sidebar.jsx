@@ -65,7 +65,6 @@ export default function Sidebar() {
       <div className="flex-1 px-3 py-4 space-y-1 overflow-y-auto custom-scrollbar overflow-x-hidden">
         {menuItems.map((item) => (
           <NavLink
-            // FIX: Ensure key uses 'item.path', NOT 'path'
             key={item.path} 
             to={item.path}
             className={({ isActive }) =>

@@ -10,15 +10,14 @@ export default function Settings() {
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
 
-  // State untuk toggle lihat password
   const [showCurrentPass, setShowCurrentPass] = useState(false);
   const [showNewPass, setShowNewPass] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    currentPassword: "", // Password lama (untuk verifikasi)
-    newPassword: "",     // Password baru
+    currentPassword: "",
+    newPassword: "",
   });
 
   useEffect(() => {
@@ -37,7 +36,6 @@ export default function Settings() {
     setSuccessMsg("");
     setErrorMsg("");
 
-    // Validasi Frontend: Kalau mau ganti password, Password Lama wajib diisi
     if (formData.newPassword && !formData.currentPassword) {
       setErrorMsg("Please enter your Current Password to set a new one.");
       setLoading(false);
@@ -48,24 +46,20 @@ export default function Settings() {
       const payload = {
         name: formData.name,
         email: formData.email,
-        current_password: formData.currentPassword, // Kirim ke backend
-        new_password: formData.newPassword          // Kirim ke backend
+        current_password: formData.currentPassword,
+        new_password: formData.newPassword
       };
 
       const res = await updateProfile(payload);
       
-      // Update Context agar nama berubah di Sidebar
-      // Kita gunakan token yang masih tersimpan di localStorage (User TETAP LOGIN)
       const token = localStorage.getItem("token");
       login(res.user, token); 
 
       setSuccessMsg("Profile updated successfully!");
       
-      // Reset field password setelah sukses
       setFormData(prev => ({ ...prev, currentPassword: "", newPassword: "" }));
     } catch (err) {
       console.error(err);
-      // Tangkap pesan error spesifik dari backend (misal: "Current password incorrect")
       const message = err.response?.data?.error || "Failed to update profile.";
       setErrorMsg(message);
     } finally {
@@ -81,7 +75,6 @@ export default function Settings() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Kolom Kiri: Kartu Profil */}
         <div className="lg:col-span-1">
           <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center">
             <div className="w-24 h-24 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-3xl font-bold mx-auto mb-4">
@@ -95,7 +88,6 @@ export default function Settings() {
           </div>
         </div>
 
-        {/* Kolom Kanan: Form */}
         <div className="lg:col-span-2">
           <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
             <div className="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2">
@@ -115,7 +107,6 @@ export default function Settings() {
                 </div>
               )}
 
-              {/* Name */}
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
                 <input
@@ -127,7 +118,6 @@ export default function Settings() {
                 />
               </div>
 
-              {/* Email */}
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
                 <input
@@ -141,14 +131,12 @@ export default function Settings() {
 
               <hr className="border-slate-100 my-4" />
 
-              {/* Security Section */}
               <div>
                 <div className="flex items-center gap-2 mb-4">
                    <Lock size={16} className="text-slate-400" />
                    <h4 className="font-medium text-slate-700">Security Check</h4>
                 </div>
 
-                {/* Input 1: Current Password */}
                 <div className="mb-4">
                   <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">Current Password</label>
                   <div className="relative">
@@ -169,7 +157,6 @@ export default function Settings() {
                   </div>
                 </div>
 
-                {/* Input 2: New Password */}
                 <div>
                   <label className="block text-xs font-semibold text-slate-500 uppercase mb-1">New Password</label>
                   <div className="relative">

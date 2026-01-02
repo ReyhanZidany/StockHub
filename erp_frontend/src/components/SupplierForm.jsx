@@ -11,7 +11,6 @@ export default function SupplierForm({ onSuccess, initialData = null }) {
     address: "",
   });
 
-  // Jika mode Edit (initialData ada), isi form dengan data lama
   useEffect(() => {
     if (initialData) {
       setFormData({
@@ -28,11 +27,11 @@ export default function SupplierForm({ onSuccess, initialData = null }) {
     setLoading(true);
     try {
       if (initialData) {
-        await updateSupplier(initialData.id, formData); // Mode Edit
+        await updateSupplier(initialData.id, formData);
       } else {
-        await createSupplier(formData); // Mode Create
+        await createSupplier(formData);
       }
-      onSuccess(); // Tutup modal & refresh
+      onSuccess();
     } catch (error) {
       console.error("Gagal menyimpan supplier:", error);
       alert("Terjadi kesalahan saat menyimpan data.");

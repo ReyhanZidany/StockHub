@@ -12,15 +12,14 @@ export default function ReduceStockForm({ product, onSuccess }) {
   const [quantity, setQuantity] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Logic Validasi & Sisa Stok
   const currentStock = product?.stock || 0;
   const reduceAmount = Number(quantity) || 0;
   const remainingStock = currentStock - reduceAmount;
-  const isInvalid = reduceAmount > currentStock; // Tidak boleh minus
+  const isInvalid = reduceAmount > currentStock;
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (isInvalid) return; // Prevent submit jika stok kurang
+    if (isInvalid) return;
 
     setLoading(true);
 
@@ -38,7 +37,6 @@ export default function ReduceStockForm({ product, onSuccess }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       
-      {/* 1. INFO PRODUK */}
       <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 flex items-start gap-4">
         <div className="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0">
           <PackageMinus className="text-slate-500" size={20} />
@@ -57,7 +55,6 @@ export default function ReduceStockForm({ product, onSuccess }) {
         </div>
       </div>
 
-      {/* 2. INPUT JUMLAH */}
       <div className="space-y-2">
         <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
           Quantity to Reduce
@@ -69,7 +66,7 @@ export default function ReduceStockForm({ product, onSuccess }) {
           <input
             type="number"
             min="1"
-            max={currentStock} // HTML Validation
+            max={currentStock}
             placeholder="0"
             value={quantity}
             onChange={(e) => setQuantity(e.target.value)}
@@ -83,7 +80,6 @@ export default function ReduceStockForm({ product, onSuccess }) {
           />
         </div>
         
-        {/* Pesan Error jika stok kurang */}
         {isInvalid && (
           <p className="text-xs text-red-600 flex items-center gap-1 font-medium animate-pulse">
             <AlertCircle size={12} />
@@ -92,7 +88,6 @@ export default function ReduceStockForm({ product, onSuccess }) {
         )}
       </div>
 
-      {/* 3. PREVIEW SISA STOK */}
       {!isInvalid && reduceAmount > 0 && (
         <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-100 text-sm">
           <span className="text-red-700">Remaining Stock:</span>
@@ -104,7 +99,6 @@ export default function ReduceStockForm({ product, onSuccess }) {
         </div>
       )}
 
-      {/* 4. TOMBOL SUBMIT */}
       <button
         type="submit"
         disabled={loading || reduceAmount <= 0 || isInvalid}

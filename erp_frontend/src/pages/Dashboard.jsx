@@ -24,7 +24,7 @@ export default function Dashboard() {
 
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
-  const [lowStockItems, setLowStockItems] = useState([]); // State baru untuk list
+  const [lowStockItems, setLowStockItems] = useState([]);
 
   useEffect(() => {
     fetchProducts()
@@ -32,11 +32,9 @@ export default function Dashboard() {
         const productList = Array.isArray(data) ? data : [];
         setProducts(productList);
 
-        // Hitung Statistik
         const totalProducts = productList.length;
         const totalStock = productList.reduce((sum, p) => sum + (Number(p.stock) || 0), 0);
         
-        // Filter Stok Menipis (< 10)
         const lowItems = productList.filter((p) => (Number(p.stock) || 0) < 10);
         setLowStockItems(lowItems);
 
@@ -53,7 +51,6 @@ export default function Dashboard() {
       .finally(() => setLoading(false));
   }, []);
 
-  // --- FUNGSI REORDER VIA WHATSAPP ---
   const handleReorder = (product) => {
     if (!product.supplier) {
       alert("Produk ini belum memiliki data Supplier. Silakan edit produk dan pilih supplier.");
@@ -66,13 +63,9 @@ export default function Dashboard() {
       return;
     }
 
-    // Format pesan WA
     const message = `Halo ${product.supplier.name}, saya ingin order stok ulang untuk produk: ${product.name} (SKU: ${product.sku}). Mohon infonya. Terima kasih.`;
     
-    // Buka WhatsApp Web/App
-    // Pastikan nomor HP format internasional atau lokal, fungsi ini asumsi input user benar
-    const cleanPhone = phone.replace(/\D/g, ''); // Hapus karakter non-angka
-    // Jika user input 0812..., ubah jadi 62812... (Sederhana)
+    const cleanPhone = phone.replace(/\D/g, '');
     const formattedPhone = cleanPhone.startsWith('0') ? '62' + cleanPhone.slice(1) : cleanPhone;
 
     window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`, "_blank");
@@ -102,7 +95,6 @@ export default function Dashboard() {
 
   return (
     <Layout>
-      {/* Header */}
       <div className="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-800">
@@ -117,7 +109,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Grid Statistik */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <StatCard title="Total Products" value={stats.totalProducts} icon={Package} colorClass="text-blue-600" bgClass="bg-blue-50" />
         <StatCard title="Total Inventory" value={stats.totalStock} icon={Layers} colorClass="text-purple-600" bgClass="bg-purple-50" />
@@ -125,10 +116,8 @@ export default function Dashboard() {
         <StatCard title="Low Stock Alert" value={stats.lowStock} icon={AlertTriangle} colorClass="text-rose-600" bgClass="bg-rose-50" />
       </div>
       
-      {/* --- LAYOUT BARU: CHART + LOW STOCK LIST --- */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        {/* Kolom Kiri (2/3 layar): Grafik */}
         <div className="lg:col-span-2">
            {loading ? (
               <div className="h-[350px] bg-white rounded-xl border border-slate-100 animate-pulse flex items-center justify-center text-slate-300">Loading Chart...</div>
@@ -139,7 +128,6 @@ export default function Dashboard() {
             )}
         </div>
 
-        {/* Kolom Kanan (1/3 layar): Low Stock Alert */}
         <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden flex flex-col h-[400px]">
            <div className="p-4 border-b border-slate-100 bg-rose-50 flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -172,7 +160,6 @@ export default function Dashboard() {
                             </span>
                          </div>
                          
-                         {/* Action Button: Reorder */}
                          <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-50">
                             <span className="text-[10px] text-slate-400 truncate max-w-[100px]">
                                {item.supplier ? item.supplier.name : "No Supplier"}

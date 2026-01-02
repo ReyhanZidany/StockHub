@@ -12,7 +12,6 @@ export default function AddStockForm({ product, onSuccess }) {
   const [quantity, setQuantity] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Hitung prediksi stok baru secara real-time
   const currentStock = product?.stock || 0;
   const addAmount = Number(quantity) || 0;
   const newTotal = currentStock + addAmount;
@@ -35,7 +34,6 @@ export default function AddStockForm({ product, onSuccess }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       
-      {/* 1. INFO PRODUK (Read Only) */}
       <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 flex items-start gap-4">
         <div className="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center shrink-0">
           <Package className="text-slate-500" size={20} />
@@ -54,7 +52,6 @@ export default function AddStockForm({ product, onSuccess }) {
         </div>
       </div>
 
-      {/* 2. INPUT JUMLAH */}
       <div className="space-y-2">
         <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
           Quantity to Add
@@ -76,7 +73,6 @@ export default function AddStockForm({ product, onSuccess }) {
         </div>
       </div>
 
-      {/* 3. PREVIEW KALKULASI (Visual Feedback) */}
       {addAmount > 0 && (
         <div className="flex items-center justify-between p-3 bg-emerald-50 rounded-lg border border-emerald-100 text-sm">
           <span className="text-emerald-700">New Total Stock:</span>
@@ -88,7 +84,6 @@ export default function AddStockForm({ product, onSuccess }) {
         </div>
       )}
 
-      {/* 4. TOMBOL SUBMIT */}
       <button
         type="submit"
         disabled={loading || addAmount <= 0}

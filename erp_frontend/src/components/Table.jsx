@@ -40,7 +40,6 @@ export default function Table({ columns, data, renderAction }) {
                       col.align === "center" ? "text-center" : "text-left"
                     }`}
                   >
-                    {/* Custom Rendering logic if needed inside cell */}
                     {col.render ? col.render(row[col.key], row) : (
                        col.key === "price" 
                         ? `Rp ${Number(row[col.key]).toLocaleString("id-ID")}`

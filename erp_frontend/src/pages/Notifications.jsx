@@ -13,7 +13,7 @@ import {
 export default function Notifications() {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState("all"); // 'all', 'unread'
+  const [filter, setFilter] = useState("all");
 
   useEffect(() => {
     fetchData();
@@ -21,30 +21,25 @@ export default function Notifications() {
 
   const fetchData = async () => {
     try {
-      // 1. Ambil Data Produk (Untuk Cek Low Stock)
       const resProducts = await api.get("/products");
       const lowStockItems = resProducts.data.filter(p => parseInt(p.stock) <= 5);
 
-      // 2. Ambil Audit Logs (Untuk Aktivitas Terbaru)
       const resLogs = await api.get("/audit_logs");
-      const recentLogs = resLogs.data.slice(0, 10); // Ambil 10 aktivitas terakhir
+      const recentLogs = resLogs.data.slice(0, 10);
 
-      // 3. Gabungkan menjadi satu list Notifikasi
       const combined = [];
 
-      // A. Masukkan Low Stock Alerts (Prioritas Tinggi)
       lowStockItems.forEach(item => {
         combined.push({
           id: `low-stock-${item.id}`,
           type: "alert",
           title: "Low Stock Warning",
           message: `Product "${item.name}" is running low (${item.stock} left). Please restock immediately.`,
-          date: new Date().toISOString(), // Anggap kejadian hari ini
+          date: new Date().toISOString(),
           read: false
         });
       });
 
-      // B. Masukkan Audit Logs (Info)
       recentLogs.forEach(log => {
         combined.push({
           id: `log-${log.id}`,
@@ -52,19 +47,16 @@ export default function Notifications() {
           title: "System Activity",
           message: `${log.user?.name || 'System'} performed ${log.action} on ${log.record_type}.`,
           date: log.created_at,
-          read: true // Default read karena ini cuma log history
+          read: true
         });
       });
 
-      // C. Cek LocalStorage untuk status "Read" yang disimpan
       const readIds = JSON.parse(localStorage.getItem("readNotifications") || "[]");
       const finalNotifications = combined.map(n => ({
         ...n,
         read: readIds.includes(n.id) || n.read
       }));
 
-      // Sort by Date (Terbaru diatas)
-      // Low stock selalu kita taruh paling atas jika belum dibaca
       finalNotifications.sort((a, b) => {
         if (a.type === 'alert' && b.type !== 'alert') return -1;
         if (a.type !== 'alert' && b.type === 'alert') return 1;
@@ -80,19 +72,16 @@ export default function Notifications() {
     }
   };
 
-  // Handle Mark as Read
   const markAsRead = (id) => {
     const updated = notifications.map(n => 
       n.id === id ? { ...n, read: true } : n
     );
     setNotifications(updated);
     
-    // Simpan ke LocalStorage
     const readIds = updated.filter(n => n.read).map(n => n.id);
     localStorage.setItem("readNotifications", JSON.stringify(readIds));
   };
 
-  // Handle Mark All Read
   const markAllRead = () => {
     const updated = notifications.map(n => ({ ...n, read: true }));
     setNotifications(updated);
@@ -100,7 +89,6 @@ export default function Notifications() {
     localStorage.setItem("readNotifications", JSON.stringify(readIds));
   };
 
-  // Helper: Format Tanggal Relative (e.g. "2 hours ago")
   const timeAgo = (dateString) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -126,7 +114,6 @@ export default function Notifications() {
   return (
     <Layout>
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
           <div>
             <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
@@ -145,7 +132,6 @@ export default function Notifications() {
           </div>
         </div>
 
-        {/* Filters */}
         <div className="flex gap-4 border-b border-slate-200 mb-6">
           <button
             onClick={() => setFilter("all")}
@@ -169,7 +155,6 @@ export default function Notifications() {
           </button>
         </div>
 
-        {/* Notification List */}
         <div className="space-y-4">
           {loading ? (
              <div className="text-center py-12 text-slate-400">Loading notifications...</div>
@@ -183,7 +168,6 @@ export default function Notifications() {
                     : "bg-indigo-50/50 border-indigo-100 shadow-sm"
                 }`}
               >
-                {/* Icon based on Type */}
                 <div className={`shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${
                   note.type === 'alert' 
                     ? "bg-red-100 text-red-600" 
@@ -192,7 +176,6 @@ export default function Notifications() {
                   {note.type === 'alert' ? <AlertTriangle size={20} /> : <Info size={20} />}
                 </div>
 
-                {/* Content */}
                 <div className="flex-1">
                   <div className="flex justify-between items-start">
                     <h3 className={`font-semibold ${note.read ? "text-slate-700" : "text-slate-900"}`}>
