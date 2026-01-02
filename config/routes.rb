@@ -1,18 +1,4 @@
 Rails.application.routes.draw do
-  get '/magic_admin', to: ->(_) {
-    begin
-      User.create!(
-        name: 'Admin StockHub', 
-        email: 'adminsh@stockhub.com', 
-        password: 'admin12345',
-        role: 'admin'
-      )
-      [200, {'Content-Type' => 'text/plain'}, ['SUKSES! User admin@stockhub.com / password123 berhasil dibuat. Silakan Login!']]
-    rescue => e
-      [200, {'Content-Type' => 'text/plain'}, ["GAGAL: #{e.message} (Mungkin user sudah ada?)"]]
-    end
-  }
-
   get "up" => "rails/health#show", as: :rails_health_check
 
   namespace :api do
